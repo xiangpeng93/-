@@ -1,0 +1,92 @@
+﻿<controls:MetroWindow x:Class="刷单管理.MangerMoney"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="刷单金额管理" Height="439.8" Width="659">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Margin="5" Grid.Column="0" VerticalAlignment="Center">入账金额:</TextBlock>
+            <TextBox Name="countMoney"  Margin="5"  Grid.Column="1" Text="0"></TextBox>
+            <TextBlock  Margin="5" Grid.Column="2" VerticalAlignment="Center">收入金额:</TextBlock>
+            <TextBox Name="incomeMoney"  Margin="5"   Grid.Column="3"></TextBox>
+            <Button Name="calcMoney"  Margin="5"   Grid.Column="4" Click="calcMoney_Click">开始计算</Button>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">名称</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1">账户</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="2">手机</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="3">商户</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="4">金额</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="5">佣金</TextBlock>
+
+            <ComboBox Name="userName" SelectedIndex="0" Grid.Row="1" Grid.Column="0">
+                <ComboBoxItem>还没做呢1号</ComboBoxItem>
+                <ComboBoxItem>还没做呢2号</ComboBoxItem>
+            </ComboBox>
+            
+            <TextBox Grid.Row="1" Grid.Column="1" Name="userCount"/>
+            <TextBox Grid.Row="1" Grid.Column="2" Name="userPhone"/>
+            <ComboBox Name="shopName" SelectedIndex="0" Grid.Row="1" Grid.Column="3">
+                <ComboBoxItem>还没做呢1号</ComboBoxItem>
+                <ComboBoxItem>还没做呢2号</ComboBoxItem>
+            </ComboBox>
+            <TextBox Grid.Row="1" Grid.Column="4" Name="costMoney" Text="0"/>
+            <TextBox Grid.Row="1" Grid.Column="5" Name="costForUser"  Text="0"/>
+            <Button Grid.Row="1" Grid.Column="6" Content="添加" Name="addItem" Click="addItem_Click"/>
+        </Grid>
+        <TextBlock Grid.Row="2"></TextBlock>
+        <Grid Grid.Row="3">
+            <ListView Name="infoList" HorizontalAlignment="Stretch" >
+                <ListView.ContextMenu>
+                    <ContextMenu Name="menu" >
+                        <MenuItem Header="删除" Click="MenuItem_Click"></MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.GroupStyle>
+                    <GroupStyle />
+                </ListView.GroupStyle>
+                <ListView.View>
+                    
+                    <GridView>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=UserName}" Header="名称">
+                            
+                        </GridViewColumn>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=UserCount}">账户</GridViewColumn>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=UserPhone}">手机</GridViewColumn>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ShopName}">商户</GridViewColumn>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=CostMoney}">金额</GridViewColumn>
+                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=CostForUser}">佣金</GridViewColumn>
+                    </GridView>
+                    
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</controls:MetroWindow>
