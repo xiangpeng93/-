@@ -16,9 +16,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	Select((char*)test.c_str());
 
 	char buff[2048] = { 0 };
+	char buff1[2048] = { 0 };
+	char buff2[2048] = { 0 };
 	do {
 		memset(buff, 0, sizeof(buff));
-		GetMsg(buff);
+		memset(buff1, 0, sizeof(buff));
+		memset(buff2, 0, sizeof(buff));
+		GetMsg(buff, buff1, buff2);
 		cout << buff << endl;
 	} while (strcmp(buff, "") != 0);
 	system("pause");
