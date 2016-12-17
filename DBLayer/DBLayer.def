@@ -1,0 +1,8 @@
+LIBRARY "DBLayer"
+EXPORTS
+Init
+Insert
+Select
+Delect
+GetMsg
+Fini
