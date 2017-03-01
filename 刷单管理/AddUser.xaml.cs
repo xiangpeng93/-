@@ -72,7 +72,7 @@ namespace 刷单管理
             infoList.ItemsSource = cs;
 
             Users.Clear();
-            Select(m_manger.sql);
+            Select(m_manger.sqlUserInfo);
             System.Threading.Thread.Sleep(100);
             string Name = "";
 
@@ -161,7 +161,7 @@ namespace 刷单管理
             m_manger.Update();
 
             Users.Clear();
-            Select(m_manger.sql);
+            Select(m_manger.sqlUserInfo);
             System.Threading.Thread.Sleep(100);
             string Name = "";
 
@@ -233,7 +233,7 @@ namespace 刷单管理
 			string selectSql = "";
 			if(chooseUserOrShop.SelectionBoxItem.Equals("用户"))
 			{
-				selectSql = m_manger.sql;
+				selectSql = m_manger.sqlUserInfo;
 			}
 			if (chooseUserOrShop.SelectionBoxItem.Equals("商户"))
 			{

@@ -22,7 +22,7 @@ namespace 刷单管理
     /// </summary>
     public partial class MangerMoney : MetroWindow
     {
-        public string sql = "select * from USERINFO ";
+        public string sqlUserInfo = "select * from USERINFO ";
         public string sqlShop = "select * from SHOPINFO ";
 
         public string searchHistoryData = "select * from HISTORYDATA ";
@@ -99,9 +99,13 @@ namespace 刷单管理
             Init();
 
             userName.Items.Clear();
-            Select(sql);
+            Select(sqlUserInfo);
             System.Threading.Thread.Sleep(100);
             string Name = "";
+
+            ComboBoxItem comboxIten1 = new ComboBoxItem();
+            comboxIten1.Content = "";
+            userName.Items.Add(comboxIten1);
 
             do
             {
@@ -124,6 +128,9 @@ namespace 刷单管理
             Select(sqlShop);
             System.Threading.Thread.Sleep(100);
             string NameShop = "";
+            ComboBoxItem comboxIten2 = new ComboBoxItem();
+            comboxIten2.Content = NameShop;
+            shopName.Items.Add(comboxIten2);
             do
             {
                 StringBuilder TuserName = new StringBuilder(2048);
@@ -147,9 +154,12 @@ namespace 刷单管理
             userCount.Clear();
             userPhone.Clear();
             userName.Items.Clear();
-            Select(sql);
+            Select(sqlUserInfo);
             System.Threading.Thread.Sleep(100);
             string Name = "";
+            ComboBoxItem comboxIten1 = new ComboBoxItem();
+            comboxIten1.Content = "";
+            userName.Items.Add(comboxIten1);
             do
             {
                 StringBuilder TuserName = new StringBuilder(2048);
@@ -171,6 +181,9 @@ namespace 刷单管理
             Select(sqlShop);
             System.Threading.Thread.Sleep(100);
             string NameShop = "";
+            ComboBoxItem comboxIten2 = new ComboBoxItem();
+            comboxIten2.Content = NameShop;
+            shopName.Items.Add(comboxIten2);
             do
             {
                 StringBuilder TuserName = new StringBuilder(2048);
@@ -371,7 +384,7 @@ namespace 刷单管理
             if (item != null)
             {
                 //MessageBox.Show(item.Content.ToString());
-                string searchUser = sql + "where USERNAME = " + "'" + item.Content.ToString() + "'";
+                string searchUser = sqlUserInfo + "where USERNAME = " + "'" + item.Content.ToString() + "'";
                 Select(searchUser);
 
                 string Name = "";
@@ -623,8 +636,7 @@ namespace 刷单管理
                     temp += sDateTime;            // 2008-9-4 20:02:10;
                     temp += "')";
 
-                    sql = temp;
-                    Insert(sql);
+                    Insert(temp);
                 }
                 else 
                 {
