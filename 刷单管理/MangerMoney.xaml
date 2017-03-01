@@ -19,14 +19,15 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Margin="5" Grid.Column="0" VerticalAlignment="Center">入账金额:</TextBlock>
             <TextBox Name="countMoney"  Margin="5"  Grid.Column="1" Text="0"></TextBox>
             <TextBlock  Margin="5" Grid.Column="2" VerticalAlignment="Center">剩余金额:</TextBlock>
             <TextBox Name="incomeMoney"  Margin="5"   Grid.Column="3"></TextBox>
             <Button Name="calcMoney"  Margin="5"   Grid.Column="4" Click="calcMoney_Click" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" MaxWidth="120" HorizontalAlignment="Left">开始计算</Button>
-
-            <Button Name="addUser"  Margin="5"   Grid.Column="5" Click="addUser_Click"  HorizontalAlignment="Right" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" >添加用户</Button>
+            
+            <Button Name="addUser"  Margin="5"   Grid.Column="6" Click="addUser_Click"  HorizontalAlignment="Right" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" >添加用户</Button>
         </Grid>
         <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
@@ -64,12 +65,12 @@
             <TextBox Grid.Row="1" Grid.Column="4" Name="costMoney"   Margin="1"/>
             <TextBox Grid.Row="1" Grid.Column="5" Name="costForUser"   Margin="1"/>
             <Button Grid.Row="1" Grid.Column="6" Content="添加" Name="addItem" Click="addItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
-            <Button Grid.Row="1" Grid.Column="7" Content="查询" Name="searchItem" Click="searchItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
+            <Button Grid.Row="1" Grid.Column="7" Content="查询" Name="searchItem" Click="searchItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" MouseDown="searchItem_MouseDown"  />
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
         <Grid Grid.Row="4" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <ListView Name="infoList" HorizontalAlignment="Stretch" Margin="5"  Grid.Column="0">
@@ -98,10 +99,19 @@
 
                 </ListView.View>
             </ListView>
-            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>
-                <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">清空列表数据</Button>
-            </StackPanel>
+            <Grid Grid.Column="1" >
+                <StackPanel VerticalAlignment="Top" >
+                    <TextBlock Text="选择查询日期:" Margin="5,10,0,0" ToolTip="使用shift拖动选择自定义查询范围"/>
+                    <Calendar Margin="0,10,0,0" Name="calendarCtlStart" Grid.Column="5" VerticalAlignment="Top"  SelectionMode="MultipleRange"  SelectedDatesChanged="calendarCtlStart_SelectionModeChanged"/>
+                    <!--<TextBlock Text="选择查询结束日期:" Margin="5,10,0,0"/>
+                    <Calendar Margin="0,10,0,0" Name="calendarCtlOver" Grid.Column="5" VerticalAlignment="Top" />-->
+                </StackPanel>
+                
+                <StackPanel  VerticalAlignment="Bottom" >
+                    <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>
+                    <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">清空列表数据</Button>
+                </StackPanel>
+                </Grid>
         </Grid>
     </Grid>
 </controls:MetroWindow>

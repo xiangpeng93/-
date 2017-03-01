@@ -27,7 +27,7 @@ namespace 刷单管理
 
         public string searchHistoryData = "select * from HISTORYDATA where ";
 
-        public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATATIME) VALUES";
+        public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
 
         string cmdDeleteHistoryData = "delete from HISTORYDATA where ";
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
@@ -54,6 +54,9 @@ namespace 刷单管理
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void GetMsg2(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone, StringBuilder shopName, StringBuilder costMoney, StringBuilder costMoneyForUser, StringBuilder dateTime);
         private ObservableCollection<CInfoList> Users = new ObservableCollection<CInfoList>();
+
+		DateTime beginDataTime;
+		DateTime lastDataTime;
 
         bool isFirstClicAddList = true;
         class CInfoList
@@ -200,7 +203,7 @@ namespace 刷单管理
             string sShopName = shopName.Text;
             string sCostMoney = costMoney.Text.ToString();
             string sCostForUser = costForUser.Text.ToString();
-            string sDatetime = DateTime.Now.ToLocalTime().ToString();
+            string sDatetime = DateTime.Now.ToLocalTime().ToString("u");
             Users.Add(new CInfoList(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime));
         }
        
@@ -251,7 +254,7 @@ namespace 刷单管理
                     if (!item.DateTime.Equals(""))
                     {
                         sql += " and ";
-                        sql += " DATATIME = '";
+                        sql += " DATETIME = '";
                         sql += item.DateTime.ToString();
                         sql += "'";
                     }
@@ -370,16 +373,35 @@ namespace 刷单管理
                 search += "SHOPNAME='";
                 search += sShopName;
                 search += "' ";
-                search += "order by DATATIME";
+				if (!beginDataTime.ToString().Equals("0001/1/1 0:00:00") && !lastDataTime.ToString().Equals("0001/1/1 0:00:00"))
+				{
+					search += " and datetime > '";
+					search += beginDataTime.ToString("u");
+					search += "' and datetime < '";
+					search += lastDataTime.ToString("u");
+					search += "'";
+
+				}
+
+                search += "order by DATETIME";
                 isSelectName = false;
-                Select2(search);
                 isSelectSuccess = true;
+
+                Select2(search);
             }
             if (isSelectName)
             {
                 isSelectSuccess = true;
-                search += "order by DATATIME";
-
+				if (!beginDataTime.ToString().Equals("0001/1/1 0:00:00") && !lastDataTime.ToString().Equals("0001/1/1 0:00:00"))
+				{
+					search += " and datetime > '";
+					search += beginDataTime.ToString("u");
+					search += "' and datetime < '";
+					search += lastDataTime.ToString("u");
+					search += "'";
+				}
+                
+                search += "order by DATETIME";
                 Select2(search);
             }
 
@@ -439,7 +461,7 @@ namespace 刷单管理
 				if( !sDateTime.Equals(""))
 				{
 					search += "and ";
-					search += "DATATIME='";
+					search += "DATETIME='";
 					search += sDateTime;
 					search += "' ";
 				}
@@ -478,7 +500,7 @@ namespace 刷单管理
 						temp += "')";
 
 						string sql = "IF NOT EXISTS( SELECT * from HISTORYDATA where USERNAME='" + sUserName + "' USERCOUNT='" + sUserCount + "' USERPHONE='" + sUserPhone + "' SHOPNAME='" + sShopName + "' COSTMONEY='" +
-						sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATATIME='" + sDateTime + "' ) THEN " + temp;
+						sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATETIME='" + sDateTime + "' ) THEN " + temp;
 						sql = temp;
 						Insert(sql);
 				}
@@ -492,6 +514,22 @@ namespace 刷单管理
             Users.Clear();
         }
 
-        
+		private void calendarCtlStart_SelectionModeChanged(object sender, EventArgs e)
+		{
+			int lastData = calendarCtlStart.SelectedDates.Count();
+			beginDataTime = calendarCtlStart.SelectedDates.ElementAt(0);
+			lastDataTime = calendarCtlStart.SelectedDates.ElementAt(lastData - 1);
+			lastDataTime = lastDataTime.AddDays(1);
+			Console.Write(beginDataTime);
+			Console.Write("\r\n");
+
+			Console.Write(lastDataTime);
+			Console.Write("\r\n");
+		}
+
+		private void searchItem_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			searchItem_Click(sender, e);
+		}
     }
 }

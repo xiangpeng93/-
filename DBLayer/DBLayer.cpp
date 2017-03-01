@@ -11,7 +11,7 @@ using namespace std;
 #include "sqlite3.h"
 #define USERINFO_TABLE "CREATE TABLE IF NOT EXISTS USERINFO (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT)"
 #define SHOPINFO_TABLE "CREATE TABLE IF NOT EXISTS SHOPINFO (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT)"
-#define HISTROYDATA_TABLE "CREATE TABLE IF NOT EXISTS HISTORYDATA (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT,SHOPNAME TEXT,COSTMONEY TEXT,COSTMONEYFORUSER TEXT,DATATIME datetime)"
+#define HISTROYDATA_TABLE "CREATE TABLE IF NOT EXISTS HISTORYDATA (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT,SHOPNAME TEXT,COSTMONEY TEXT,COSTMONEYFORUSER TEXT,DATETIME datetime)"
 #define DATABASE "info.db"
 sqlite3 * db;
 char* sErrMsg = 0;
@@ -29,7 +29,7 @@ struct HISTORYINFO{
 	string SHOPNAME;
 	string COSTMONEY;
 	string COSTMONEYFORUSER;
-	string DATATIME;
+	string DATETIME;
 };
 vector<pair<string, HISTORYINFO>> g_returnHistoryMsg;
 
@@ -122,9 +122,9 @@ int callback2(void*para, int nCount, char** pValue, char** pName) {
 		{
 			tempInfo.COSTMONEYFORUSER = pValue[i];
 		}
-		else if (strcmp(pName[i], "DATATIME") == 0)
+		else if (strcmp(pName[i], "DATETIME") == 0)
 		{
-			tempInfo.DATATIME = pValue[i];
+			tempInfo.DATETIME = pValue[i];
 		}
 	}
 
@@ -225,8 +225,8 @@ void __stdcall GetMsg2(char *userName, char *userCount, char *userPhone, char *s
 			strcpy_s(costMoney, iter->second.COSTMONEY.length() + 1, iter->second.COSTMONEY.c_str());
 		if (iter->second.COSTMONEYFORUSER.length() > 0)
 			strcpy_s(costMoneyForUser, iter->second.COSTMONEYFORUSER.length() + 1, iter->second.COSTMONEYFORUSER.c_str());
-		if (iter->second.DATATIME.length() > 0)
-			strcpy_s(dataTime, iter->second.DATATIME.length() + 1, iter->second.DATATIME.c_str());
+		if (iter->second.DATETIME.length() > 0)
+			strcpy_s(dataTime, iter->second.DATETIME.length() + 1, iter->second.DATETIME.c_str());
 
 		g_returnHistoryMsg.erase(iter);
 	}
