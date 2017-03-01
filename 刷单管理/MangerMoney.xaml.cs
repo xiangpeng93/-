@@ -515,7 +515,6 @@ namespace 刷单管理
             foreach (var item in Users)
             {
 				string search = searchHistoryData;
-				string searchForUser = searchHistoryDataUser;
 
 				string sUserName = item.UserName;
 				string sUserCount = item.UserCount;
@@ -589,6 +588,8 @@ namespace 刷单管理
                 //end
 
                 //start
+                string searchForUser = searchHistoryDataUser;
+
                 if (!sUserName.Equals(""))
                 {
                     searchForUser += "where USERNAME='";
@@ -611,6 +612,13 @@ namespace 刷单管理
                 }
 
                 Select2(searchForUser);
+                TuserName.Clear();
+                TuserCount.Clear();
+                TuserPhone.Clear();
+                ShopName.Clear();
+                COSTMONEY.Clear();
+                COSTMONEYForUser.Clear();
+                DateTime.Clear();
 
                 GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, DateTime);
                 TempUserName = TuserName.ToString();
@@ -699,6 +707,8 @@ namespace 刷单管理
 
         private void serachHistoryUserData_Click(object sender, RoutedEventArgs e)
         {
+            Users.Clear();
+
             string search = searchHistoryDataUser;
             search += " order by datetime";
             Select2(search);
@@ -706,7 +716,6 @@ namespace 刷单管理
             string TempShopName;
             string TempDataTime;
             
-            Users.Clear();
             do
             {
                 StringBuilder TuserName = new StringBuilder(2048);
