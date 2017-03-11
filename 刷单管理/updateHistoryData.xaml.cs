@@ -31,79 +31,86 @@ namespace 刷单管理
 		string tMoney;
 		string tCostMoney;
 		string tDatetime;
+        int tTableType;
 		string updateHistoryDataUser = "UPDATE USERDATAHISTORY ";
 
 		string HistoryDataTable = "UPDATE HISTORYDATA ";
-
-		public updateHistoryData()
+        MangerMoney g_mangerMoney;
+        public updateHistoryData(MangerMoney mangerMoney)
 		{
 			InitializeComponent();
+            g_mangerMoney = mangerMoney;
 		}
 		
 
 		private void updateHistoryData_Click(object sender, RoutedEventArgs e)
 		{
-			string temp = updateHistoryDataUser;
-			temp += "SET ";
 
-			temp += "USERNAME = '";
-			temp += username.Text;
-			temp += "' , ";
+            string temp;
 
-			temp += "USERCOUNT = '";
-			temp += usercount.Text;
-			temp += "' , ";
+            if(tTableType == 1)
+            {
+                temp = updateHistoryDataUser;
+                temp += "SET ";
 
-			temp += "USERPHONE = '";
-			temp += userphone.Text;
-			temp += "' , ";
+                temp += "USERNAME = '";
+                temp += username.Text;
+                temp += "' , ";
 
-			temp += "SHOPNAME = '";
-			temp += shopName.Text;
-			temp += "' , ";
+                temp += "USERCOUNT = '";
+                temp += usercount.Text;
+                temp += "' , ";
 
-			temp += "COSTMONEY = '";
-			temp += usermoney.Text;
-			temp += "', ";
+                temp += "USERPHONE = '";
+                temp += userphone.Text;
+                temp += "' , ";
 
-			temp += "COSTMONEYFORUSER = '";
-			temp += usercostMoney.Text;
-			temp += "', ";
+                temp += "SHOPNAME = '";
+                temp += shopName.Text;
+                temp += "' , ";
 
-			temp += "DATETIME = '";
-			temp += usertime.Text;
+                temp += "COSTMONEY = '";
+                temp += usermoney.Text;
+                temp += "', ";
 
-			temp += "' WHERE ";
+                temp += "COSTMONEYFORUSER = '";
+                temp += usercostMoney.Text;
+                temp += "', ";
 
-			temp += "USERNAME = '";
-			temp += tUserName;
-			temp += "' and ";
+                temp += "DATETIME = '";
+                temp += usertime.Text;
 
-			temp += "USERCOUNT = '";
-			temp += tUserCount;
-			temp += "' and ";
+                temp += "' WHERE ";
 
-			temp += "USERPHONE = '";
-			temp += tUserPhone;
-			temp += "' and ";
+                temp += "USERNAME = '";
+                temp += tUserName;
+                temp += "' and ";
 
-			temp += "SHOPNAME = '";
-			temp += tShopName;
-			temp += "' and ";
+                temp += "USERCOUNT = '";
+                temp += tUserCount;
+                temp += "' and ";
 
-			temp += "COSTMONEY = '";
-			temp += tMoney;
-			temp += "' and ";
+                temp += "USERPHONE = '";
+                temp += tUserPhone;
+                temp += "' and ";
 
-			temp += "COSTMONEYFORUSER = '";
-			temp += tCostMoney;
-			temp += "' and ";
+                temp += "SHOPNAME = '";
+                temp += tShopName;
+                temp += "' and ";
 
-			temp += "DATETIME = '";
-			temp += tDatetime;
-			temp += "' ";
-			Delete(temp);
+                temp += "COSTMONEY = '";
+                temp += tMoney;
+                temp += "' and ";
 
+                temp += "COSTMONEYFORUSER = '";
+                temp += tCostMoney;
+                temp += "' and ";
+
+                temp += "DATETIME = '";
+                temp += tDatetime;
+                temp += "' ";
+                Delete(temp);
+            }
 
             temp = HistoryDataTable;
 			temp += "SET ";
@@ -167,10 +174,13 @@ namespace 刷单管理
 			Delete(temp);
 
 
-this.Close();
+            this.Close();
+            g_mangerMoney.IsEnabled = true;
+            g_mangerMoney.saveItemDyInput(username.Text,usercount.Text,userphone.Text,shopName.Text,usermoney.Text,usercostMoney.Text,usertime.Text);
+            g_mangerMoney.searchItemData();
 		}
 
-		internal void SetLocalData(string name,string count, string phone,string shop,string money,string costmoney,string time)
+		internal void SetLocalData(string name,string count, string phone,string shop,string money,string costmoney,string time,int tableType)
 		{
 			tUserName = name;
 			tUserCount = count;
@@ -179,6 +189,7 @@ this.Close();
 			tMoney = money;
 			tCostMoney = costmoney;
 			tDatetime = time;
+            tTableType = tableType;
 
 			username.Text = name;
 			usercount.Text = count;

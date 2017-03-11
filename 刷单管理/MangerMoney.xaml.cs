@@ -63,6 +63,10 @@ namespace 刷单管理
 		DateTime lastDataTime;
 
         bool isFirstClicAddList = true;
+
+        // 0 history Table
+        // 1 historyUser Table
+        int g_tableType = 0;
         class CInfoList
         {
             public CInfoList(string sUserName,
@@ -209,6 +213,7 @@ namespace 刷单管理
         }
         private void addItem_Click(object sender, RoutedEventArgs e)
         {
+            g_tableType = 0;
             if(isFirstClicAddList)
             {
                 Users.Clear();
@@ -342,9 +347,10 @@ namespace 刷单管理
 			CInfoList item = o as CInfoList;
 			if (!item.UserName.Equals(""))
 			{
-				updateHistoryData updateHistory = new updateHistoryData();
-				updateHistory.SetLocalData(item.UserName, item.UserCount, item.UserPhone, item.ShopName,item.CostMoney, item.CostForUser, item.DateTime);
+				updateHistoryData updateHistory = new updateHistoryData(this);
+				updateHistory.SetLocalData(item.UserName, item.UserCount, item.UserPhone, item.ShopName,item.CostMoney, item.CostForUser, item.DateTime,g_tableType);
 				updateHistory.Show();
+                this.IsEnabled = false;
 			}
 			else
 			{
@@ -437,7 +443,7 @@ namespace 刷单管理
             addUser.Show();
         }
 
-        private void searchItem_Click(object sender, RoutedEventArgs e)
+        public void searchItemData()
         {
             isFirstClicAddList = true;
             string search = searchHistoryData;
@@ -445,41 +451,41 @@ namespace 刷单管理
             string sShopName = shopName.Text;
             bool isSelectName = false;
             bool isSelectSuccess = false;
-            if ( !sUserName.Equals("") )
+            if (!sUserName.Equals(""))
             {
                 search += "where USERNAME='";
                 search += sUserName;
                 search += "' ";
                 isSelectName = true;
             }
-			else if (sShopName.Equals(""))
-			{
-				search += " order by DATETIME";
-				Select2(search);
-				isSelectSuccess = true;
-			}
-            if( !sShopName.Equals(""))
+            else if (sShopName.Equals(""))
+            {
+                search += " order by DATETIME";
+                Select2(search);
+                isSelectSuccess = true;
+            }
+            if (!sShopName.Equals(""))
             {
                 if (isSelectName)
                 {
                     search += "and ";
                 }
-				else
-				{
+                else
+                {
                     search += "where ";
-				}
+                }
                 search += "SHOPNAME='";
                 search += sShopName;
                 search += "' ";
                 if (!beginDataTime.ToString("u").Equals("0001-01-01 00:00:00Z") && !lastDataTime.ToString("u").Equals("0001-01-01 00:00:00Z"))
-				{
-					search += " and datetime > '";
-					search += beginDataTime.ToString("u");
-					search += "' and datetime < '";
-					search += lastDataTime.ToString("u");
-					search += "'";
+                {
+                    search += " and datetime > '";
+                    search += beginDataTime.ToString("u");
+                    search += "' and datetime < '";
+                    search += lastDataTime.ToString("u");
+                    search += "'";
 
-				}
+                }
 
                 isSelectName = false;
                 isSelectSuccess = true;
@@ -491,14 +497,14 @@ namespace 刷单管理
             {
                 isSelectSuccess = true;
                 if (!beginDataTime.ToString("u").Equals("0001-01-01 00:00:00Z") && !lastDataTime.ToString("u").Equals("0001-01-01 00:00:00Z"))
-				{
-					search += " and datetime > '";
-					search += beginDataTime.ToString("u");
-					search += "' and datetime < '";
-					search += lastDataTime.ToString("u");
-					search += "'";
-				}
-                
+                {
+                    search += " and datetime > '";
+                    search += beginDataTime.ToString("u");
+                    search += "' and datetime < '";
+                    search += lastDataTime.ToString("u");
+                    search += "'";
+                }
+
                 search += "order by DATETIME";
                 Select2(search);
             }
@@ -506,7 +512,7 @@ namespace 刷单管理
             string TempUserName;
             string TempShopName;
             string TempDataTime;
-            if(isSelectSuccess)
+            if (isSelectSuccess)
             {
                 Users.Clear();
                 do
@@ -518,10 +524,10 @@ namespace 刷单管理
                     StringBuilder COSTMONEY = new StringBuilder(2048);
                     StringBuilder COSTMONEYForUser = new StringBuilder(2048);
                     StringBuilder sDateTime = new StringBuilder(2048);
-                    GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,sDateTime);
+                    GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, sDateTime);
                     TempUserName = TuserName.ToString();
                     TempShopName = ShopName.ToString();
-					TempDataTime = sDateTime.ToString();
+                    TempDataTime = sDateTime.ToString();
                     if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false)
                     {
                         Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
@@ -529,185 +535,205 @@ namespace 刷单管理
                 }
                 while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
             }
-            
         }
+        private void searchItem_Click(object sender, RoutedEventArgs e)
+        {
+            g_tableType = 0;
+            searchItemData();       
+        }
+        public void saveItemDyInput(string sUserName,string sUserCount, string sUserPhone,string sShopName,string sCostMoney,string sCostForUser,string sDateTime)
+        {
+            string search = searchHistoryData;
+            if (!sUserName.Equals(""))
+            {
+            search += "where USERNAME='";
+            search += sUserName;
+            search += "' ";
+            }
+            if (!sShopName.Equals(""))
+            {
+            search += "and ";
+            search += "SHOPNAME='";
+            search += sShopName;
+            search += "' ";
+            }
+            if (!sDateTime.Equals(""))
+            {
+            search += "and ";
+            search += "DATETIME='";
+            search += sDateTime;
+            search += "' ";
+            }
 
-        private void SaveHistoryData_Click(object sender, RoutedEventArgs e)
+            Select2(search);
+
+            string TempUserName;
+            string TempShopName;
+            string TempDateTime;
+            StringBuilder TuserName = new StringBuilder(2048);
+            StringBuilder TuserCount = new StringBuilder(2048);
+            StringBuilder TuserPhone = new StringBuilder(2048);
+            StringBuilder ShopName = new StringBuilder(2048);
+            StringBuilder COSTMONEY = new StringBuilder(2048);
+            StringBuilder COSTMONEYForUser = new StringBuilder(2048);
+            StringBuilder DateTimeData = new StringBuilder(2048);
+            GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, DateTimeData);
+            TempUserName = TuserName.ToString();
+            TempShopName = ShopName.ToString();
+            TempDateTime = DateTimeData.ToString();
+            if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") &&
+            !sUserName.Equals("") && !sShopName.Equals(""))
+            {
+            string temp = InsertHistoryData;
+            temp += "('";
+            temp += sUserName;
+            temp += "','";
+            temp += sUserCount;
+            temp += "','";
+            temp += sUserPhone;
+            temp += "','";
+            temp += sShopName;
+            temp += "','";
+            temp += sCostMoney;
+            temp += "','";
+            temp += sCostForUser;
+            temp += "','";
+            temp += sDateTime;            // 2008-9-4 20:02:10;
+            temp += "')";
+
+            string sql = temp;
+            Insert(sql);
+            }
+            //end
+
+            //start
+            string searchForUser = searchHistoryDataUser;
+
+            if (!sUserName.Equals(""))
+            {
+            searchForUser += "where USERNAME='";
+            searchForUser += sUserName;
+            searchForUser += "' ";
+            }
+            if (!sShopName.Equals(""))
+            {
+            searchForUser += "and ";
+            searchForUser += "SHOPNAME='";
+            searchForUser += sShopName;
+            searchForUser += "' ";
+            }
+            if (!sUserCount.Equals(""))
+            {
+            searchForUser += "and ";
+            searchForUser += "USERCOUNT='";
+            searchForUser += sUserCount;
+            searchForUser += "' ";
+            }
+
+            Select2(searchForUser);
+            TuserName.Clear();
+            TuserCount.Clear();
+            TuserPhone.Clear();
+            ShopName.Clear();
+            COSTMONEY.Clear();
+            COSTMONEYForUser.Clear();
+            DateTimeData.Clear();
+
+            GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, DateTimeData);
+            TempUserName = TuserName.ToString();
+            TempShopName = ShopName.ToString();
+            TempDateTime = DateTimeData.ToString();
+            if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") &&
+            !sUserName.Equals("") && !sShopName.Equals(""))
+            {
+            string temp = InsertHistoryDataUser;
+            temp += "('";
+            temp += sUserName;
+            temp += "','";
+            temp += sUserCount;
+            temp += "','";
+            temp += sUserPhone;
+            temp += "','";
+            temp += sShopName;
+            temp += "','";
+            temp += sCostMoney;
+            temp += "','";
+            temp += sCostForUser;
+            temp += "','";
+            temp += sDateTime;            // 2008-9-4 20:02:10;
+            temp += "')";
+
+            Insert(temp);
+            }
+            else
+            {
+
+            DateTime nowDate = Convert.ToDateTime(sDateTime);
+            DateTime lastDate = Convert.ToDateTime(TempDateTime);
+            if (DateTime.Compare(nowDate, lastDate) >= 0)
+            {
+
+
+                string temp = updateHistoryDataUser;
+                temp += "SET ";
+
+                temp += "COSTMONEY = '";
+                temp += sCostMoney;
+                temp += "', ";
+
+                temp += "COSTMONEYFORUSER = '";
+                temp += sCostForUser;
+                temp += "', ";
+
+                temp += "DATETIME = '";
+                temp += sDateTime;
+                temp += "' WHERE ";
+
+                temp += "USERNAME = '";
+                temp += sUserName;
+                temp += "' and ";
+
+                temp += "USERCOUNT = '";
+                temp += sUserCount;
+                temp += "' and ";
+
+                temp += "USERPHONE = '";
+                temp += sUserPhone;
+                temp += "' and ";
+
+                temp += "SHOPNAME = '";
+                temp += sShopName;
+                temp += "' ";
+
+                Delete(temp);
+            }
+            //"SET USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+            }
+        }
+        public void saveItemData()
         {
             int dataCount = Users.Count();
             foreach (var item in Users)
             {
-				string search = searchHistoryData;
+                
 
-				string sUserName = item.UserName;
-				string sUserCount = item.UserCount;
-				string sUserPhone = item.UserPhone;
-				string sShopName = item.ShopName;
-				string sCostMoney = item.CostMoney;
-				string sCostForUser = item.CostForUser;
-				string sDateTime = item.DateTime;
-				if ( !sUserName.Equals("") )
-				{
-					search += "where USERNAME='";
-					search += sUserName;
-					search += "' ";
-				}
-				if( !sShopName.Equals(""))
-				{
-					search += "and ";
-					search += "SHOPNAME='";
-					search += sShopName;
-					search += "' ";
-				}
-				if( !sDateTime.Equals(""))
-				{
-					search += "and ";
-					search += "DATETIME='";
-					search += sDateTime;
-					search += "' ";
-				}
-            
-				Select2(search);
+                string sUserName = item.UserName;
+                string sUserCount = item.UserCount;
+                string sUserPhone = item.UserPhone;
+                string sShopName = item.ShopName;
+                string sCostMoney = item.CostMoney;
+                string sCostForUser = item.CostForUser;
+                string sDateTime = item.DateTime;
 
-				string TempUserName;
-				string TempShopName;
-				string TempDateTime;
-				StringBuilder TuserName = new StringBuilder(2048);
-				StringBuilder TuserCount = new StringBuilder(2048);
-				StringBuilder TuserPhone = new StringBuilder(2048);
-				StringBuilder ShopName = new StringBuilder(2048);
-				StringBuilder COSTMONEY = new StringBuilder(2048);
-				StringBuilder COSTMONEYForUser = new StringBuilder(2048);
-				StringBuilder DateTime = new StringBuilder(2048);
-				GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,DateTime);
-				TempUserName = TuserName.ToString();
-				TempShopName = ShopName.ToString();
-				TempDateTime = DateTime.ToString();
-				if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") && 
-					!sUserName.Equals("") && !sShopName.Equals(""))
-				{
-						string temp = InsertHistoryData;
-						temp += "('";
-						temp += sUserName;
-						temp += "','";
-						temp += sUserCount;
-						temp += "','";
-						temp += sUserPhone;
-						temp += "','";
-						temp += sShopName;
-						temp += "','";
-						temp += sCostMoney;
-						temp += "','";
-						temp += sCostForUser;
-						temp += "','";
-						temp += sDateTime;            // 2008-9-4 20:02:10;
-						temp += "')";
+                saveItemDyInput(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDateTime);
 
-						string sql = "IF NOT EXISTS( SELECT * from HISTORYDATA where USERNAME='" + sUserName + "' USERCOUNT='" + sUserCount + "' USERPHONE='" + sUserPhone + "' SHOPNAME='" + sShopName + "' COSTMONEY='" +
-						sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATETIME='" + sDateTime + "' ) THEN " + temp;
-						sql = temp;
-						Insert(sql);
-				}
-                //end
+            }
+            Users.Clear();
+        }
 
-                //start
-                string searchForUser = searchHistoryDataUser;
-
-                if (!sUserName.Equals(""))
-                {
-                    searchForUser += "where USERNAME='";
-                    searchForUser += sUserName;
-                    searchForUser += "' ";
-                }
-                if (!sShopName.Equals(""))
-                {
-                    searchForUser += "and ";
-                    searchForUser += "SHOPNAME='";
-                    searchForUser += sShopName;
-                    searchForUser += "' ";
-                }
-                if (!sUserCount.Equals(""))
-                {
-                    searchForUser += "and ";
-                    searchForUser += "USERCOUNT='";
-                    searchForUser += sUserCount;
-                    searchForUser += "' ";
-                }
-
-                Select2(searchForUser);
-                TuserName.Clear();
-                TuserCount.Clear();
-                TuserPhone.Clear();
-                ShopName.Clear();
-                COSTMONEY.Clear();
-                COSTMONEYForUser.Clear();
-                DateTime.Clear();
-
-                GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, DateTime);
-                TempUserName = TuserName.ToString();
-                TempShopName = ShopName.ToString();
-                TempDateTime = DateTime.ToString();
-                if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") &&
-                    !sUserName.Equals("") && !sShopName.Equals(""))
-                {
-                    string temp = InsertHistoryDataUser;
-                    temp += "('";
-                    temp += sUserName;
-                    temp += "','";
-                    temp += sUserCount;
-                    temp += "','";
-                    temp += sUserPhone;
-                    temp += "','";
-                    temp += sShopName;
-                    temp += "','";
-                    temp += sCostMoney;
-                    temp += "','";
-                    temp += sCostForUser;
-                    temp += "','";
-                    temp += sDateTime;            // 2008-9-4 20:02:10;
-                    temp += "')";
-
-                    Insert(temp);
-                }
-                else 
-                {
-                    string temp = updateHistoryDataUser;
-                    temp += "SET ";
-
-                    temp += "COSTMONEY = '";
-                    temp += sCostMoney;
-                    temp += "', ";
-
-                    temp += "COSTMONEYFORUSER = '";
-                    temp += sCostForUser;
-                    temp += "', ";
-
-                    temp += "DATETIME = '";
-                    temp += sDateTime;
-                    temp += "' WHERE ";
-
-                    temp += "USERNAME = '";
-                    temp += sUserName;
-                    temp += "' and ";
-
-                    temp += "USERCOUNT = '";
-                    temp += sUserCount;
-                    temp += "' and ";
-
-                    temp += "USERPHONE = '";
-                    temp += sUserPhone;
-                    temp += "' and ";
-
-                    temp += "SHOPNAME = '";
-                    temp += sShopName;
-                    temp += "' ";
-                    Delete(temp);
-                    //"SET USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
-                }
-
-			}
-			Users.Clear();
-			
+        private void SaveHistoryData_Click(object sender, RoutedEventArgs e)
+        {
+            saveItemData();
 		}
 
         private void ClearData_Click(object sender, RoutedEventArgs e)
@@ -730,6 +756,7 @@ namespace 刷单管理
 
         private void serachHistoryUserData_Click(object sender, RoutedEventArgs e)
         {
+            g_tableType = 1;
             Users.Clear();
 
             string search = searchHistoryDataUser;
