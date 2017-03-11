@@ -180,6 +180,7 @@ void  __stdcall Select2(char *sql)
 
 void __stdcall Delete(char *sql)
 {
+	cout << sql << endl;
 	char *flag = "Delete";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
 }

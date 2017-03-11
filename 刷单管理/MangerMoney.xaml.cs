@@ -329,6 +329,29 @@ namespace 刷单管理
             }
             Users.Remove(item);
         }
+
+		private void EditHistoryData_Click(object sender, RoutedEventArgs e)
+		{
+			object o = infoList.SelectedItem;
+			if (o == null)
+			{
+				MessageBox.Show("列表为空！");
+				return;
+			}
+				
+			CInfoList item = o as CInfoList;
+			if (!item.UserName.Equals(""))
+			{
+				updateHistoryData updateHistory = new updateHistoryData();
+				updateHistory.SetLocalData(item.UserName, item.UserCount, item.UserPhone, item.ShopName,item.CostMoney, item.CostForUser, item.DateTime);
+				updateHistory.Show();
+			}
+			else
+			{
+				MessageBox.Show("名称为空！");
+			}
+		}
+
         private void calcMoney_Click(object sender, RoutedEventArgs e)
         {
             int AllMoney  = 0;
@@ -710,6 +733,12 @@ namespace 刷单管理
             Users.Clear();
 
             string search = searchHistoryDataUser;
+			if (!shopName.Text.Equals(""))
+			{
+				search += " where SHOPNAME='";
+				search += shopName.Text.ToString();
+				search += "'";
+			}
             search += " order by datetime";
             Select2(search);
             string TempUserName;
@@ -736,6 +765,8 @@ namespace 刷单管理
             }
             while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
         }
+
+		
 
     }
 }
