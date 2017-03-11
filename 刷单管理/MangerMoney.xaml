@@ -4,7 +4,7 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="刷单金额管理" Height="720" Width="1100">
     <Grid>
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions >
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
