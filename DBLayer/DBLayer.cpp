@@ -83,28 +83,32 @@ void __stdcall Insert(char *sql)
 
 void  __stdcall Select(char *sql)
 {
+	g_mutex.lock();
+	g_returnMsg.clear();
+	g_mutex.unlock();
 	char *flag = "Select";
 	sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
 }
 
-void __stdcall Delect(char *sql)
+void __stdcall Delete(char *sql)
 {
-	char *flag = "Delect";
+	char *flag = "Delete";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
 }
 
 void __stdcall GetMsg(char *userName, char *userCount, char *userPhone)
 {
 	g_mutex.lock();
+
 	if (g_returnMsg.size() > 0)
 	{
 		map<string, msgInfo>::iterator iter = (g_returnMsg.begin());
 		if (iter->second.userName.length() > 0)
 			strcpy_s(userName, iter->second.userName.length() + 1, iter->second.userName.c_str());
 		if (iter->second.userCount.length() > 0)
-			strcpy_s(userCount, iter->second.userCount.length() + 1, iter->second.userName.c_str());
+			strcpy_s(userCount, iter->second.userCount.length() + 1, iter->second.userCount.c_str());
 		if (iter->second.userPhone.length() > 0)
-			strcpy_s(userPhone, iter->second.userPhone.length() + 1, iter->second.userName.c_str());
+			strcpy_s(userPhone, iter->second.userPhone.length() + 1, iter->second.userPhone.c_str());
 		g_returnMsg.erase(iter);
 	}
 	g_mutex.unlock();

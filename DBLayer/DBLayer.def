@@ -3,6 +3,6 @@ EXPORTS
 Init
 Insert
 Select
-Delect
+Delete
 GetMsg
 Fini

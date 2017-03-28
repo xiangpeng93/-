@@ -5,16 +5,17 @@
 #include "../DBLayer/DBLayer.h"
 #include <iostream>
 using namespace std;
-#pragma comment (lib,"../Debug/DBLayer.lib")
+#pragma comment (lib,"../Release/DBLayer.lib")
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Init();
 	string test = "INSERT INTO USERINFO (USERNAME , USERCOUNT , USERPHONE ) VALUES ('œÓ≈Ù', 'pengxiang07072811',18072741787)";
-	Insert((char*)test.c_str());
+	//Insert((char*)test.c_str());
 	test = "SELECT * from USERINFO";
 	Select((char*)test.c_str());
 
+	
 	char buff[2048] = { 0 };
 	char buff1[2048] = { 0 };
 	char buff2[2048] = { 0 };
@@ -26,6 +27,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << buff << endl;
 	} while (strcmp(buff, "") != 0);
 	system("pause");
+	test = "delete from USERINFO WHERE USERNAME='≤‚ ‘2 '";
+	Delete((char*)test.c_str());
 	return 0;
 }
 
