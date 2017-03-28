@@ -8,6 +8,7 @@ using namespace std;
 //, SHOPNAME TEXT, ORDERCOST TEXT, USERGET TEXT
 #include "sqlite3.h"
 #define USERINFO_TABLE "CREATE TABLE IF NOT EXISTS USERINFO (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT)"
+#define HISTROYDATA_TABLE "CREATE TABLE IF NOT EXISTS HISTROYDATA (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT,DATATIME datetime)"
 #define DATABASE "info.db"
 sqlite3 * db;
 char* sErrMsg = 0;
@@ -72,6 +73,7 @@ void __stdcall Init()
 {
 	sqlite3_open(DATABASE, &db);
 	sqlite3_exec(db, USERINFO_TABLE, NULL, NULL, &sErrMsg);
+	sqlite3_exec(db, HISTROYDATA_TABLE, NULL, NULL, &sErrMsg);
 	sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &sErrMsg);
 	sqlite3_exec(db, "PRAGMA journal_mode = MEMORY", NULL, NULL, &sErrMsg);
 }
