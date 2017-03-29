@@ -23,6 +23,14 @@ namespace 刷单管理
     public partial class MangerMoney : MetroWindow
     {
         public string sql = "select * from USERINFO ";
+
+        public string searchHistoryData = "select * from HISTORYDATA where ";
+
+        public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATATIME) VALUES";
+
+        [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern void Insert(string sql);
+
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void Init();
 
@@ -33,7 +41,13 @@ namespace 刷单管理
         public static extern void Select(string sql);
 
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern void Select2(string sql);
+
+        [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void GetMsg(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone);
+
+        [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern void GetMsg2(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone, StringBuilder shopName, StringBuilder costMoney, StringBuilder costMoneyForUser, StringBuilder dateTime);
         private ObservableCollection<CInfoList> Users = new ObservableCollection<CInfoList>();
         class CInfoList
         {
@@ -42,7 +56,8 @@ namespace 刷单管理
             string sUserPhone ,
             string sShopName ,
             string sCostMoney ,
-            string sCostForUser)
+            string sCostForUser,
+            string sDateTime)
             {
                 UserName = sUserName;
                 UserCount = sUserCount;
@@ -50,13 +65,15 @@ namespace 刷单管理
                 ShopName = sShopName;
                 CostMoney = sCostMoney;
                 CostForUser = sCostForUser;
+                DateTime = sDateTime;
             }
             public string UserName { get; set; }
             public string UserCount { get; set; }
             public string UserPhone { get; set; }
             public string ShopName { get; set; }
             public string CostMoney{ get; set; }
-            public string CostForUser{ get; set; }
+            public string CostForUser { get; set; }
+            public string DateTime { get; set; }
         }
         public MangerMoney()
         {
@@ -128,7 +145,8 @@ namespace 刷单管理
             string sShopName = shopName.Text;
             string sCostMoney = costMoney.Text.ToString();
             string sCostForUser = costForUser.Text.ToString();
-            Users.Add(new CInfoList(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser));
+            string sDatetime = DateTime.Now.ToLocalTime().ToString();
+            Users.Add(new CInfoList(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime));
         }
        
         
@@ -223,8 +241,113 @@ namespace 刷单管理
         private void addUser_Click(object sender, RoutedEventArgs e)
         {
             AddUser addUser = new AddUser(this);
-            this.Visibility = (Visibility)1;
+            //this.Visibility = (Visibility)1;
             addUser.Show();
+        }
+
+        private void searchItem_Click(object sender, RoutedEventArgs e)
+        {
+            string search = searchHistoryData;
+            string sUserName = userName.Text;
+            string sShopName = shopName.Text;
+            bool isSelectName = false;
+            bool isSelectSuccess = false;
+            if ( !sUserName.Equals("") )
+            {
+                search += "USERNAME='";
+                search += sUserName;
+                search += "' ";
+                isSelectName = true;
+            }
+            if( !sShopName.Equals(""))
+            {
+                if (isSelectName)
+                {
+                    search += "and ";
+                }
+                search += "SHOPNAME='";
+                search += sShopName;
+                search += "' ";
+                search += "order by DATATIME";
+                isSelectName = false;
+                Select2(search);
+                isSelectSuccess = true;
+            }
+            if (isSelectName)
+            {
+                isSelectSuccess = true;
+                search += "order by DATATIME";
+
+                Select2(search);
+            }
+
+            string TempUserName;
+            string TempShopName;
+            if(isSelectSuccess)
+            {
+                Users.Clear();
+                do
+                {
+                    StringBuilder TuserName = new StringBuilder(2048);
+                    StringBuilder TuserCount = new StringBuilder(2048);
+                    StringBuilder TuserPhone = new StringBuilder(2048);
+                    StringBuilder ShopName = new StringBuilder(2048);
+                    StringBuilder COSTMONEY = new StringBuilder(2048);
+                    StringBuilder COSTMONEYForUser = new StringBuilder(2048);
+                    StringBuilder DateTime = new StringBuilder(2048);
+                    GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,DateTime);
+                    TempUserName = TuserName.ToString();
+                    TempShopName = ShopName.ToString();
+                    if (TempUserName.Equals("") == false || TempShopName.Equals("") == false)
+                    {
+                        Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), DateTime.ToString()));
+                    }
+                }
+                while (TempUserName.Equals("") == false || TempShopName.Equals("") == false);
+            }
+            
+        }
+
+        private void SaveHistoryData_Click(object sender, RoutedEventArgs e)
+        {
+            int dataCount = Users.Count();
+            foreach (var item in Users)
+            {
+                string sUserName = item.UserName;
+                string sUserCount = item.UserCount;
+                string sUserPhone = item.UserPhone;
+                string sShopName = item.ShopName;
+                string sCostMoney = item.CostMoney;
+                string sCostForUser = item.CostForUser;
+                string sDateTime = item.DateTime;
+
+                if (!sUserName.Equals("") && !sShopName.Equals(""))
+                {
+                    string sql = InsertHistoryData;
+                    sql += "('";
+                    sql += sUserName;
+                    sql += "','";
+                    sql += sUserCount;
+                    sql += "','";
+                    sql += sUserPhone;
+                    sql += "','";
+                    sql += sShopName;
+                    sql += "','";
+                    sql += sCostMoney;
+                    sql += "','";
+                    sql += sCostForUser;
+                    sql += "','";
+                    sql += sDateTime;            // 2008-9-4 20:02:10;
+                    sql += "')";
+                    Insert(sql);
+                }
+            }
+            Users.Clear();
+        }
+
+        private void ClearData_Click(object sender, RoutedEventArgs e)
+        {
+            Users.Clear();
         }
     }
 }

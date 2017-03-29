@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -35,18 +35,18 @@
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Bottom">名称</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Bottom">账户</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Bottom">旺旺号</TextBlock>
             <TextBlock Grid.Row="0" Grid.Column="2" Margin="5" VerticalAlignment="Bottom">手机</TextBlock>
             <TextBox  Grid.Row="1" Grid.Column="0" Name="userName"  Margin="1"></TextBox>
             <TextBox  Grid.Row="1" Grid.Column="1" Name="userCount"  Margin="1"/>
             <TextBox Grid.Row="1" Grid.Column="2" Name="userPhone"  Margin="1"/>
 
-            <Button Grid.Row="0" Grid.Column="3" Name="sqlAdd" Click="sqlAdd_Click"  Margin="5" Content="添加用户" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" />
+            <Button Grid.Row="1" Grid.Column="3" Name="sqlAdd" Click="sqlAdd_Click"  Margin="5" Content="添加用户" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" />
 
-            <Button Grid.Row="0" Grid.Column="4" Name="backMainWindow" Click="backMainWindows_Click"  Margin="5" Content="返回主页面" FontSize="15" FontFamily="KaiTi" FontWeight="Normal"/>
+            <Button Grid.Row="1" Grid.Column="4" Name="backMainWindow" Click="backMainWindows_Click"  Margin="5" Content="返回主页面" FontSize="15" FontFamily="KaiTi" FontWeight="Normal"/>
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="3" Margin="5">
             <ListView Name="infoList" HorizontalAlignment="Stretch" Margin="5" >
                 <ListView.ContextMenu>
                     <ContextMenu Name="menu" >
@@ -61,7 +61,7 @@
                     <GridView>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserName}" Header="名称">
                         </GridViewColumn>
-                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserCount}">账户</GridViewColumn>
+                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserCount}">旺旺号</GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserPhone}">手机</GridViewColumn>
                     </GridView>
 

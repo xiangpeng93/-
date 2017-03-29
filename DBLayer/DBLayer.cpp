@@ -8,7 +8,7 @@ using namespace std;
 //, SHOPNAME TEXT, ORDERCOST TEXT, USERGET TEXT
 #include "sqlite3.h"
 #define USERINFO_TABLE "CREATE TABLE IF NOT EXISTS USERINFO (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT)"
-#define HISTROYDATA_TABLE "CREATE TABLE IF NOT EXISTS HISTROYDATA (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT,DATATIME datetime)"
+#define HISTROYDATA_TABLE "CREATE TABLE IF NOT EXISTS HISTORYDATA (id INTEGER PRIMARY KEY, USERNAME TEXT, USERCOUNT TEXT, USERPHONE TEXT,SHOPNAME TEXT,COSTMONEY TEXT,COSTMONEYFORUSER TEXT,DATATIME datetime)"
 #define DATABASE "info.db"
 sqlite3 * db;
 char* sErrMsg = 0;
@@ -18,6 +18,17 @@ struct msgInfo{
 	string userPhone;
 };
 map<string, msgInfo> g_returnMsg;
+
+struct HISTORYINFO{
+	string userName;
+	string userCount;
+	string userPhone; 
+	string SHOPNAME;
+	string COSTMONEY;
+	string COSTMONEYFORUSER;
+	string DATATIME;
+};
+map<string, HISTORYINFO> g_returnHistoryMsg;
 
 mutex g_mutex;
 class AutoLock{
@@ -34,6 +45,7 @@ public:
 private:
 	mutex *m_mutex;
 };
+
 int callback(void*para, int nCount, char** pValue, char** pName) {
 	char *flag = (char *)para;
 	string s;
@@ -69,6 +81,57 @@ int callback(void*para, int nCount, char** pValue, char** pName) {
 	return 0;
 }
 
+int callback2(void*para, int nCount, char** pValue, char** pName) {
+	char *flag = (char *)para;
+	string s;
+	HISTORYINFO tempInfo;
+	string id;
+	for (int i = 0; i<nCount; i++){
+		s += pName[i];
+		s += ":";
+		s += pValue[i];
+		s += "\n";
+		if (strcmp(pName[i], "id") == 0)
+		{
+			id = pValue[i];
+		}
+		if (strcmp(pName[i], "USERNAME") == 0)
+		{
+			tempInfo.userName = pValue[i];
+		}
+		else if (strcmp(pName[i], "USERCOUNT") == 0)
+		{
+			tempInfo.userCount = pValue[i];
+		}
+		else if (strcmp(pName[i], "USERPHONE") == 0)
+		{
+			tempInfo.userPhone = pValue[i];
+		}
+		else if (strcmp(pName[i], "SHOPNAME") == 0)
+		{
+			tempInfo.SHOPNAME = pValue[i];
+		}
+		else if (strcmp(pName[i], "COSTMONEY") == 0)
+		{
+			tempInfo.COSTMONEY = pValue[i];
+		}
+		else if (strcmp(pName[i], "COSTMONEYFORUSER") == 0)
+		{
+			tempInfo.COSTMONEYFORUSER = pValue[i];
+		}
+		else if (strcmp(pName[i], "DATATIME") == 0)
+		{
+			tempInfo.DATATIME = pValue[i];
+		}
+	}
+
+	cout << s.c_str() << endl;
+	g_mutex.lock();
+	g_returnHistoryMsg.insert(std::pair<string, HISTORYINFO>(id, tempInfo));
+	g_mutex.unlock();
+	return 0;
+}
+
 void __stdcall Init()
 {
 	sqlite3_open(DATABASE, &db);
@@ -92,6 +155,15 @@ void  __stdcall Select(char *sql)
 	sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
 }
 
+void  __stdcall Select2(char *sql)
+{
+	g_mutex.lock();
+	g_returnMsg.clear();
+	g_mutex.unlock();
+	char *flag = "Select";
+	sqlite3_exec(db, sql, callback2, (void *)flag, &sErrMsg);
+}
+
 void __stdcall Delete(char *sql)
 {
 	char *flag = "Delete";
@@ -112,6 +184,33 @@ void __stdcall GetMsg(char *userName, char *userCount, char *userPhone)
 		if (iter->second.userPhone.length() > 0)
 			strcpy_s(userPhone, iter->second.userPhone.length() + 1, iter->second.userPhone.c_str());
 		g_returnMsg.erase(iter);
+	}
+	g_mutex.unlock();
+
+}
+
+void __stdcall GetMsg2(char *userName, char *userCount, char *userPhone, char *shopName, char *costMoney, char *costMoneyForUser,char * dataTime)
+{
+	g_mutex.lock();
+	if (g_returnHistoryMsg.size() > 0)
+	{
+		map<string, HISTORYINFO>::iterator iter = (g_returnHistoryMsg.begin());
+		if (iter->second.userName.length() > 0)
+			strcpy_s(userName, iter->second.userName.length() + 1, iter->second.userName.c_str());
+		if (iter->second.userCount.length() > 0)
+			strcpy_s(userCount, iter->second.userCount.length() + 1, iter->second.userCount.c_str());
+		if (iter->second.userPhone.length() > 0)
+			strcpy_s(userPhone, iter->second.userPhone.length() + 1, iter->second.userPhone.c_str());
+		if (iter->second.SHOPNAME.length() > 0)
+			strcpy_s(shopName, iter->second.SHOPNAME.length() + 1, iter->second.SHOPNAME.c_str());
+		if (iter->second.COSTMONEY.length() > 0)
+			strcpy_s(costMoney, iter->second.COSTMONEY.length() + 1, iter->second.COSTMONEY.c_str());
+		if (iter->second.COSTMONEYFORUSER.length() > 0)
+			strcpy_s(costMoneyForUser, iter->second.COSTMONEYFORUSER.length() + 1, iter->second.COSTMONEYFORUSER.c_str());
+		if (iter->second.DATATIME.length() > 0)
+			strcpy_s(dataTime, iter->second.DATATIME.length() + 1, iter->second.DATATIME.c_str());
+
+		g_returnHistoryMsg.erase(iter);
 	}
 	g_mutex.unlock();
 

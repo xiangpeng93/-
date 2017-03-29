@@ -5,7 +5,7 @@
 #include "../DBLayer/DBLayer.h"
 #include <iostream>
 using namespace std;
-#pragma comment (lib,"../Debug/DBLayer.lib")
+#pragma comment (lib,"../Release/DBLayer.lib")
 
 int _tmain(int argc, _TCHAR* argv[])
 {
