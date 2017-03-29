@@ -1,6 +1,6 @@
 
 REM 获取当前路径
-localPath = createobject("Scripting.FileSystemObject").GetFolder(".").Path\
+localPath = createobject("Scripting.FileSystemObject").GetFolder(".").Path
 
 Set fso = CreateObject("Scripting.FileSystemObject")
 source = localPath + "\TBM"
