@@ -1,26 +1,25 @@
-
-REM è·å–å½“å‰è·¯å¾„
+REM »ñÈ¡µ±Ç°Â·¾¶
 localPath = createobject("Scripting.FileSystemObject").GetFolder(".").Path
 
 Set fso = CreateObject("Scripting.FileSystemObject")
 source = localPath + "\TBM"
 
-REM æ‹·è´è‡³æŒ‡å®šç›®å½•
+REM ¿½±´ÖÁÖ¸¶¨Ä¿Â¼
 dstPath = "C:\Program Files (x86)\"
 fso.CopyFolder source, dstPath
 
-REM åˆ é™¤å®‰è£…åŒ…
+REM É¾³ı°²×°°ü
 fso.DeleteFolder(source)
 
 set WshShell=WScript.CreateObject("WScript.Shell")  
 
 strDesktop=WshShell.SpecialFolders("Desktop")  
-set oShellLink=WshShell.CreateShortcut(strDesktop & "\åˆ·å•ç®¡ç†.lnk")  
-oShellLink.TargetPath="C:\Program Files (x86)\TBM\åˆ·å•ç®¡ç†.exe"  
+set oShellLink=WshShell.CreateShortcut(strDesktop & "\Ë¢µ¥¹ÜÀí.lnk")  
+oShellLink.TargetPath="C:\Program Files (x86)\TBM\Ë¢µ¥¹ÜÀí.exe"  
 oShellLink.WindowStyle=1
-oShellLink.Description="åˆ·å•ç®¡ç†"  
+oShellLink.Description="Ë¢µ¥¹ÜÀí"  
 oShellLink.WorkingDirectory=strDesktop  
 oShellLink.Save 
 
-REM åˆ é™¤è‡ªèº«
+REM É¾³ı×ÔÉí
 fso.DeleteFile(WScript.ScriptFullName)

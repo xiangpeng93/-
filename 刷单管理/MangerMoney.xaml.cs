@@ -28,8 +28,12 @@ namespace 刷单管理
 
         public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATATIME) VALUES";
 
+        string cmdDeleteHistoryData = "delete from HISTORYDATA where ";
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void Insert(string sql);
+
+        [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern void Delete(string sql);
 
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void Init();
@@ -49,6 +53,8 @@ namespace 刷单管理
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void GetMsg2(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone, StringBuilder shopName, StringBuilder costMoney, StringBuilder costMoneyForUser, StringBuilder dateTime);
         private ObservableCollection<CInfoList> Users = new ObservableCollection<CInfoList>();
+
+        bool isFirstClicAddList = true;
         class CInfoList
         {
             public CInfoList(string sUserName,
@@ -139,6 +145,11 @@ namespace 刷单管理
         }
         private void addItem_Click(object sender, RoutedEventArgs e)
         {
+            if(isFirstClicAddList)
+            {
+                Users.Clear();
+                isFirstClicAddList = false;
+            }
             string sUserName = userName.Text;
             string sUserCount = userCount.Text;
             string sUserPhone = userPhone.Text;
@@ -159,6 +170,53 @@ namespace 刷单管理
             Users.Remove(item);
         }
 
+        private void DeleteDbData_Click(object sender, RoutedEventArgs e)
+        {
+            object o = infoList.SelectedItem;
+            if (o == null)
+                return;
+            CInfoList item = o as CInfoList;
+
+            string sql = cmdDeleteHistoryData;
+            if (!item.UserName.Equals(""))
+            {
+                sql += "USERNAME = '";
+                sql += item.UserName.ToString();
+                sql += "'";
+                if (!item.UserCount.Equals(""))
+                {
+                    sql += " and ";
+                    sql += "USERCOUNT='";
+                    sql += item.UserCount.ToString();
+                    sql += "'";
+                    if (!item.UserPhone.Equals(""))
+                    {
+                        sql += " and ";
+                        sql += " USERPHONE = '";
+                        sql += item.UserPhone.ToString();
+                        sql += "'";
+                    }
+                    if (!item.ShopName.Equals(""))
+                    {
+                        sql += " and ";
+                        sql += " SHOPNAME = '";
+                        sql += item.ShopName.ToString();
+                        sql += "'";
+                    }
+
+                    if (!item.DateTime.Equals(""))
+                    {
+                        sql += " and ";
+                        sql += " DATATIME = '";
+                        sql += item.DateTime.ToString();
+                        sql += "'";
+                    }
+
+                }
+                Delete(sql);
+            }
+            Users.Remove(item);
+        }
         private void calcMoney_Click(object sender, RoutedEventArgs e)
         {
             int AllMoney  = 0;
@@ -247,6 +305,7 @@ namespace 刷单管理
 
         private void searchItem_Click(object sender, RoutedEventArgs e)
         {
+            isFirstClicAddList = true;
             string search = searchHistoryData;
             string sUserName = userName.Text;
             string sShopName = shopName.Text;
@@ -323,31 +382,39 @@ namespace 刷单管理
 
                 if (!sUserName.Equals("") && !sShopName.Equals(""))
                 {
-                    string sql = InsertHistoryData;
-                    sql += "('";
-                    sql += sUserName;
-                    sql += "','";
-                    sql += sUserCount;
-                    sql += "','";
-                    sql += sUserPhone;
-                    sql += "','";
-                    sql += sShopName;
-                    sql += "','";
-                    sql += sCostMoney;
-                    sql += "','";
-                    sql += sCostForUser;
-                    sql += "','";
-                    sql += sDateTime;            // 2008-9-4 20:02:10;
-                    sql += "')";
+
+                    string temp = InsertHistoryData;
+                    temp += "('";
+                    temp += sUserName;
+                    temp += "','";
+                    temp += sUserCount;
+                    temp += "','";
+                    temp += sUserPhone;
+                    temp += "','";
+                    temp += sShopName;
+                    temp += "','";
+                    temp += sCostMoney;
+                    temp += "','";
+                    temp += sCostForUser;
+                    temp += "','";
+                    temp += sDateTime;            // 2008-9-4 20:02:10;
+                    temp += "')";
+
+                    string sql = "IF NOT EXISTS( SELECT * from HISTORYDATA where USERNAME='" + sUserName + "' USERCOUNT='" + sUserCount + "' USERPHONE='" + sUserPhone + "' SHOPNAME='" + sShopName + "' COSTMONEY='" +
+                    sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATATIME='" + sDateTime + "' ) THEN " + temp;
+                    sql = temp;
                     Insert(sql);
                 }
             }
             Users.Clear();
+            MessageBox.Show("保存成功");
         }
 
         private void ClearData_Click(object sender, RoutedEventArgs e)
         {
             Users.Clear();
         }
+
+        
     }
 }

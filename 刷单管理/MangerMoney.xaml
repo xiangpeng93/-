@@ -75,7 +75,8 @@
             <ListView Name="infoList" HorizontalAlignment="Stretch" Margin="5"  Grid.Column="0">
                 <ListView.ContextMenu>
                     <ContextMenu Name="menu" >
-                        <MenuItem Header="删除" Click="MenuItem_Click"></MenuItem>
+                        <MenuItem Header="删除列表数据" Click="MenuItem_Click"></MenuItem>
+                        <MenuItem Header="删除历史数据" Name="DeleteDbData" Click="DeleteDbData_Click"></MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.GroupStyle>

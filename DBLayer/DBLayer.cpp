@@ -1,8 +1,10 @@
 // DBLayer.cpp : 定义 DLL 应用程序的导出函数。
 //
 #include <iostream>
-#include <map>
+#include <vector>
 #include <mutex>
+#include <Windows.h>
+
 using namespace std;
 #include "DBLayer.h"
 //, SHOPNAME TEXT, ORDERCOST TEXT, USERGET TEXT
@@ -17,7 +19,7 @@ struct msgInfo{
 	string userCount;
 	string userPhone;
 };
-map<string, msgInfo> g_returnMsg;
+vector<pair<string, msgInfo>> g_returnMsg;
 
 struct HISTORYINFO{
 	string userName;
@@ -28,7 +30,7 @@ struct HISTORYINFO{
 	string COSTMONEYFORUSER;
 	string DATATIME;
 };
-map<string, HISTORYINFO> g_returnHistoryMsg;
+vector<pair<string, HISTORYINFO>> g_returnHistoryMsg;
 
 mutex g_mutex;
 class AutoLock{
@@ -76,7 +78,7 @@ int callback(void*para, int nCount, char** pValue, char** pName) {
 
 	cout << s.c_str() << endl;
 	g_mutex.lock();
-	g_returnMsg.insert(std::pair<string, msgInfo>(id, tempInfo));
+	g_returnMsg.push_back(std::pair<string, msgInfo>(id, tempInfo));
 	g_mutex.unlock();
 	return 0;
 }
@@ -127,14 +129,21 @@ int callback2(void*para, int nCount, char** pValue, char** pName) {
 
 	cout << s.c_str() << endl;
 	g_mutex.lock();
-	g_returnHistoryMsg.insert(std::pair<string, HISTORYINFO>(id, tempInfo));
+	g_returnHistoryMsg.push_back(std::pair<string, HISTORYINFO>(id, tempInfo));
 	g_mutex.unlock();
 	return 0;
 }
-
 void __stdcall Init()
 {
-	sqlite3_open(DATABASE, &db);
+	char chpath[256];
+	GetModuleFileNameA(NULL, (char*)chpath, sizeof(chpath));
+	string dataPath = chpath;
+	int status = dataPath.find_last_of("\\");
+	dataPath.erase(status);
+
+	dataPath += "\\";
+	dataPath += DATABASE;
+	sqlite3_open(dataPath.c_str(), &db);
 	sqlite3_exec(db, USERINFO_TABLE, NULL, NULL, &sErrMsg);
 	sqlite3_exec(db, HISTROYDATA_TABLE, NULL, NULL, &sErrMsg);
 	sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &sErrMsg);
@@ -161,10 +170,17 @@ void  __stdcall Select2(char *sql)
 	g_returnMsg.clear();
 	g_mutex.unlock();
 	char *flag = "Select";
+	cout << sql << endl;
 	sqlite3_exec(db, sql, callback2, (void *)flag, &sErrMsg);
 }
 
 void __stdcall Delete(char *sql)
+{
+	char *flag = "Delete";
+	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
+}
+
+void __stdcall Delete2(char *sql)
 {
 	char *flag = "Delete";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
@@ -176,7 +192,7 @@ void __stdcall GetMsg(char *userName, char *userCount, char *userPhone)
 
 	if (g_returnMsg.size() > 0)
 	{
-		map<string, msgInfo>::iterator iter = (g_returnMsg.begin());
+		vector<pair<string, msgInfo>>::iterator iter = (g_returnMsg.begin());
 		if (iter->second.userName.length() > 0)
 			strcpy_s(userName, iter->second.userName.length() + 1, iter->second.userName.c_str());
 		if (iter->second.userCount.length() > 0)
@@ -194,7 +210,7 @@ void __stdcall GetMsg2(char *userName, char *userCount, char *userPhone, char *s
 	g_mutex.lock();
 	if (g_returnHistoryMsg.size() > 0)
 	{
-		map<string, HISTORYINFO>::iterator iter = (g_returnHistoryMsg.begin());
+		vector<pair<string, HISTORYINFO>>::iterator iter = (g_returnHistoryMsg.begin());
 		if (iter->second.userName.length() > 0)
 			strcpy_s(userName, iter->second.userName.length() + 1, iter->second.userName.c_str());
 		if (iter->second.userCount.length() > 0)
