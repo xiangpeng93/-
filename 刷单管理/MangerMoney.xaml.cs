@@ -25,7 +25,7 @@ namespace 刷单管理
         public string sql = "select * from USERINFO ";
         public string sqlShop = "select * from SHOPINFO ";
 
-        public string searchHistoryData = "select * from HISTORYDATA where ";
+        public string searchHistoryData = "select * from HISTORYDATA ";
 
         public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
 
@@ -202,7 +202,18 @@ namespace 刷单管理
             string sUserPhone = userPhone.Text;
             string sShopName = shopName.Text;
             string sCostMoney = costMoney.Text.ToString();
+            if(sCostMoney.Length > 8)
+			{
+				MessageBox.Show("输入金额过大,最大99999999!");
+				return;
+			}
             string sCostForUser = costForUser.Text.ToString();
+			if(sCostForUser.Length > 8)
+			{
+				MessageBox.Show("输入金额过大,最大99999999!");
+				return;
+
+			}
             string sDatetime = DateTime.Now.ToLocalTime().ToString("u");
             Users.Add(new CInfoList(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime));
         }
@@ -230,36 +241,35 @@ namespace 刷单管理
                 sql += "USERNAME = '";
                 sql += item.UserName.ToString();
                 sql += "'";
-                if (!item.UserCount.Equals(""))
-                {
-                    sql += " and ";
-                    sql += "USERCOUNT='";
-                    sql += item.UserCount.ToString();
-                    sql += "'";
-                    if (!item.UserPhone.Equals(""))
-                    {
-                        sql += " and ";
-                        sql += " USERPHONE = '";
-                        sql += item.UserPhone.ToString();
-                        sql += "'";
-                    }
-                    if (!item.ShopName.Equals(""))
-                    {
-                        sql += " and ";
-                        sql += " SHOPNAME = '";
-                        sql += item.ShopName.ToString();
-                        sql += "'";
-                    }
+				if (!item.UserCount.Equals(""))
+				{
+					sql += " and ";
+					sql += "USERCOUNT='";
+					sql += item.UserCount.ToString();
+					sql += "'";
+				}
+				if (!item.UserPhone.Equals(""))
+				{
+					sql += " and ";
+					sql += " USERPHONE = '";
+					sql += item.UserPhone.ToString();
+					sql += "'";
+				}
+				if (!item.ShopName.Equals(""))
+				{
+					sql += " and ";
+					sql += " SHOPNAME = '";
+					sql += item.ShopName.ToString();
+					sql += "'";
+				}
+				if (!item.DateTime.Equals(""))
+				{
+					sql += " and ";
+					sql += " DATETIME = '";
+					sql += item.DateTime.ToString();
+					sql += "'";
+				}
 
-                    if (!item.DateTime.Equals(""))
-                    {
-                        sql += " and ";
-                        sql += " DATETIME = '";
-                        sql += item.DateTime.ToString();
-                        sql += "'";
-                    }
-
-                }
                 Delete(sql);
             }
             Users.Remove(item);
@@ -278,11 +288,11 @@ namespace 刷单管理
             int CostMoney = 0;
             for (int i = 0; i < Users.Count;i++ )
             {
-                if (!Users[i].CostMoney.Equals(""))
+                if (!Users[i].CostMoney.Equals("") && Users[i].CostMoney.Length <= 8)
                 {
                     CostMoney += Int32.Parse(Users[i].CostMoney.ToString());
                 }
-                if (!Users[i].CostForUser.Equals(""))
+                if (!Users[i].CostForUser.Equals("") && Users[i].CostForUser.Length <= 8)
                 {
                     CostMoney += Int32.Parse(Users[i].CostForUser.ToString());
                 }
@@ -359,17 +369,27 @@ namespace 刷单管理
             bool isSelectSuccess = false;
             if ( !sUserName.Equals("") )
             {
-                search += "USERNAME='";
+                search += "where USERNAME='";
                 search += sUserName;
                 search += "' ";
                 isSelectName = true;
             }
+			else if (sShopName.Equals(""))
+			{
+				search += " order by DATETIME";
+				Select2(search);
+				isSelectSuccess = true;
+			}
             if( !sShopName.Equals(""))
             {
                 if (isSelectName)
                 {
                     search += "and ";
                 }
+				else
+				{
+                    search += "where ";
+				}
                 search += "SHOPNAME='";
                 search += sShopName;
                 search += "' ";
@@ -383,10 +403,10 @@ namespace 刷单管理
 
 				}
 
-                search += "order by DATETIME";
                 isSelectName = false;
                 isSelectSuccess = true;
 
+                search += "order by DATETIME";
                 Select2(search);
             }
             if (isSelectName)
@@ -407,6 +427,7 @@ namespace 刷单管理
 
             string TempUserName;
             string TempShopName;
+            string TempDataTime;
             if(isSelectSuccess)
             {
                 Users.Clear();
@@ -418,16 +439,17 @@ namespace 刷单管理
                     StringBuilder ShopName = new StringBuilder(2048);
                     StringBuilder COSTMONEY = new StringBuilder(2048);
                     StringBuilder COSTMONEYForUser = new StringBuilder(2048);
-                    StringBuilder DateTime = new StringBuilder(2048);
-                    GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,DateTime);
+                    StringBuilder sDateTime = new StringBuilder(2048);
+                    GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,sDateTime);
                     TempUserName = TuserName.ToString();
                     TempShopName = ShopName.ToString();
-                    if (TempUserName.Equals("") == false || TempShopName.Equals("") == false)
+					TempDataTime = sDateTime.ToString();
+                    if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false)
                     {
-                        Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), DateTime.ToString()));
+                        Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
                     }
                 }
-                while (TempUserName.Equals("") == false || TempShopName.Equals("") == false);
+                while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
             }
             
         }
@@ -447,7 +469,7 @@ namespace 刷单管理
 				string sDateTime = item.DateTime;
 				if ( !sUserName.Equals("") )
 				{
-					search += "USERNAME='";
+					search += "where USERNAME='";
 					search += sUserName;
 					search += "' ";
 				}
@@ -470,6 +492,7 @@ namespace 刷单管理
 
 				string TempUserName;
 				string TempShopName;
+				string TempDateTime;
 				StringBuilder TuserName = new StringBuilder(2048);
 				StringBuilder TuserCount = new StringBuilder(2048);
 				StringBuilder TuserPhone = new StringBuilder(2048);
@@ -480,7 +503,9 @@ namespace 刷单管理
 				GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,DateTime);
 				TempUserName = TuserName.ToString();
 				TempShopName = ShopName.ToString();
-				if (TempUserName.Equals("") && TempShopName.Equals(""))
+				TempDateTime = DateTime.ToString();
+				if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") && 
+					!sUserName.Equals("") && !sShopName.Equals(""))
 				{
 						string temp = InsertHistoryData;
 						temp += "('";
@@ -527,9 +552,5 @@ namespace 刷单管理
 			Console.Write("\r\n");
 		}
 
-		private void searchItem_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			searchItem_Click(sender, e);
-		}
     }
 }
