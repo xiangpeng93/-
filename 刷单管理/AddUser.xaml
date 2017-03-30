@@ -37,13 +37,19 @@
             <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Bottom">名称</TextBlock>
             <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Bottom">旺旺号</TextBlock>
             <TextBlock Grid.Row="0" Grid.Column="2" Margin="5" VerticalAlignment="Bottom">手机</TextBlock>
-            <TextBox  Grid.Row="1" Grid.Column="0" Name="userName"  Margin="1"></TextBox>
-            <TextBox  Grid.Row="1" Grid.Column="1" Name="userCount"  Margin="1"/>
-            <TextBox Grid.Row="1" Grid.Column="2" Name="userPhone"  Margin="1"/>
+            <TextBox  Grid.Row="1" Grid.Column="0" Name="userName"  Margin="5"></TextBox>
+            <TextBox  Grid.Row="1" Grid.Column="1" Name="userCount"  Margin="5"/>
+            <TextBox Grid.Row="1" Grid.Column="2" Name="userPhone"  Margin="5"/>
 
-            <Button Grid.Row="1" Grid.Column="3" Name="sqlAdd" Click="sqlAdd_Click"  Margin="5" Content="添加用户" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" />
-
-            <Button Grid.Row="1" Grid.Column="4" Name="backMainWindow" Click="backMainWindows_Click"  Margin="5" Content="返回主页面" FontSize="15" FontFamily="KaiTi" FontWeight="Normal"/>
+            <!--<Button Grid.Row="1" Grid.Column="3" Name="sqlAdd" Click="sqlAdd_Click"  Margin="5" Content="添加用户" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" />-->
+            <!--<Button Grid.Row="1" Grid.Column="4" Name="AddShop" Click="AddShop_Click"  Margin="5" Content="添加商户" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" />-->
+            <Button Grid.Row="1" Grid.Column="4" Name="AddToDb" Click="AddToDb_Click"  Margin="5" Content="添加" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" HorizontalAlignment="Left" MinWidth="70"/>
+            <Button Grid.Row="1" Grid.Column="4" Name="search" Click="search_Click"  Margin="5" Content="查询" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" HorizontalAlignment="Right" MinWidth="70"/>
+            <ComboBox  Grid.Row="1" Grid.Column="3" SelectedIndex="0" Margin="5" Name="chooseUserOrShop">
+                <ComboBoxItem Name="userItem">用户</ComboBoxItem>
+                <ComboBoxItem Name="shopItem">商户</ComboBoxItem>
+            </ComboBox>
+            <Button Grid.Row="0" Grid.Column="4" Name="backMainWindow" Click="backMainWindows_Click"  Margin="5" Content="返回" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" HorizontalAlignment="Right"/>
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
         <Grid Grid.Row="3" Margin="5">

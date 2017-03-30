@@ -23,6 +23,7 @@ namespace 刷单管理
     public partial class MangerMoney : MetroWindow
     {
         public string sql = "select * from USERINFO ";
+        public string sqlShop = "select * from SHOPINFO ";
 
         public string searchHistoryData = "select * from HISTORYDATA where ";
 
@@ -112,6 +113,27 @@ namespace 刷单管理
             while (Name.Equals("") == false);
             userName.SelectedIndex = -1;
 
+			shopName.Items.Clear();
+            Select(sqlShop);
+            System.Threading.Thread.Sleep(100);
+            string NameShop = "";
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                GetMsg(TuserName, TuserCount, TuserPhone);
+                NameShop = TuserName.ToString();
+                if (NameShop.Equals("") == false)
+                {
+                    ComboBoxItem comboxIten = new ComboBoxItem();
+                    comboxIten.Content = NameShop;
+                    shopName.Items.Add(comboxIten);
+                }
+            }
+            while (NameShop.Equals("") == false);
+            shopName.SelectedIndex = -1;
+
         }
         public void Update()
         {
@@ -137,6 +159,28 @@ namespace 刷单管理
             }
             while (Name.Equals("") == false);
             userName.SelectedIndex = -1;
+
+            shopName.Items.Clear();
+            Select(sqlShop);
+            System.Threading.Thread.Sleep(100);
+            string NameShop = "";
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                GetMsg(TuserName, TuserCount, TuserPhone);
+                NameShop = TuserName.ToString();
+                if (Name.Equals("") == false)
+                {
+                    ComboBoxItem comboxIten = new ComboBoxItem();
+                    comboxIten.Content = Name;
+                    shopName.Items.Add(comboxIten);
+                }
+            }
+            while (NameShop.Equals("") == false);
+            shopName.SelectedIndex = -1;
+
         }
         public class Person
         {
@@ -251,7 +295,6 @@ namespace 刷单管理
             ComboBoxItem combox = (ComboBoxItem)sender;
 
             string test = combox.Content.ToString();
-            MessageBox.Show(test);
             return;
         }
 
@@ -372,43 +415,77 @@ namespace 刷单管理
             int dataCount = Users.Count();
             foreach (var item in Users)
             {
-                string sUserName = item.UserName;
-                string sUserCount = item.UserCount;
-                string sUserPhone = item.UserPhone;
-                string sShopName = item.ShopName;
-                string sCostMoney = item.CostMoney;
-                string sCostForUser = item.CostForUser;
-                string sDateTime = item.DateTime;
+				string search = searchHistoryData;
+				string sUserName = item.UserName;
+				string sUserCount = item.UserCount;
+				string sUserPhone = item.UserPhone;
+				string sShopName = item.ShopName;
+				string sCostMoney = item.CostMoney;
+				string sCostForUser = item.CostForUser;
+				string sDateTime = item.DateTime;
+				if ( !sUserName.Equals("") )
+				{
+					search += "USERNAME='";
+					search += sUserName;
+					search += "' ";
+				}
+				if( !sShopName.Equals(""))
+				{
+					search += "and ";
+					search += "SHOPNAME='";
+					search += sShopName;
+					search += "' ";
+				}
+				if( !sDateTime.Equals(""))
+				{
+					search += "and ";
+					search += "DATATIME='";
+					search += sDateTime;
+					search += "' ";
+				}
+            
+				Select2(search);
 
-                if (!sUserName.Equals("") && !sShopName.Equals(""))
-                {
+				string TempUserName;
+				string TempShopName;
+				StringBuilder TuserName = new StringBuilder(2048);
+				StringBuilder TuserCount = new StringBuilder(2048);
+				StringBuilder TuserPhone = new StringBuilder(2048);
+				StringBuilder ShopName = new StringBuilder(2048);
+				StringBuilder COSTMONEY = new StringBuilder(2048);
+				StringBuilder COSTMONEYForUser = new StringBuilder(2048);
+				StringBuilder DateTime = new StringBuilder(2048);
+				GetMsg2(TuserName, TuserCount, TuserPhone, ShopName,COSTMONEY,COSTMONEYForUser,DateTime);
+				TempUserName = TuserName.ToString();
+				TempShopName = ShopName.ToString();
+				if (TempUserName.Equals("") && TempShopName.Equals(""))
+				{
+						string temp = InsertHistoryData;
+						temp += "('";
+						temp += sUserName;
+						temp += "','";
+						temp += sUserCount;
+						temp += "','";
+						temp += sUserPhone;
+						temp += "','";
+						temp += sShopName;
+						temp += "','";
+						temp += sCostMoney;
+						temp += "','";
+						temp += sCostForUser;
+						temp += "','";
+						temp += sDateTime;            // 2008-9-4 20:02:10;
+						temp += "')";
 
-                    string temp = InsertHistoryData;
-                    temp += "('";
-                    temp += sUserName;
-                    temp += "','";
-                    temp += sUserCount;
-                    temp += "','";
-                    temp += sUserPhone;
-                    temp += "','";
-                    temp += sShopName;
-                    temp += "','";
-                    temp += sCostMoney;
-                    temp += "','";
-                    temp += sCostForUser;
-                    temp += "','";
-                    temp += sDateTime;            // 2008-9-4 20:02:10;
-                    temp += "')";
-
-                    string sql = "IF NOT EXISTS( SELECT * from HISTORYDATA where USERNAME='" + sUserName + "' USERCOUNT='" + sUserCount + "' USERPHONE='" + sUserPhone + "' SHOPNAME='" + sShopName + "' COSTMONEY='" +
-                    sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATATIME='" + sDateTime + "' ) THEN " + temp;
-                    sql = temp;
-                    Insert(sql);
-                }
-            }
-            Users.Clear();
-            MessageBox.Show("保存成功");
-        }
+						string sql = "IF NOT EXISTS( SELECT * from HISTORYDATA where USERNAME='" + sUserName + "' USERCOUNT='" + sUserCount + "' USERPHONE='" + sUserPhone + "' SHOPNAME='" + sShopName + "' COSTMONEY='" +
+						sCostMoney + "' COSTMONEYFORUSER='" + sCostForUser + "' DATATIME='" + sDateTime + "' ) THEN " + temp;
+						sql = temp;
+						Insert(sql);
+				}
+			}
+			Users.Clear();
+			MessageBox.Show("保存成功");
+		}
 
         private void ClearData_Click(object sender, RoutedEventArgs e)
         {

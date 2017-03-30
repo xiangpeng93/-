@@ -11,11 +11,11 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="0.3*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="0.3*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -24,11 +24,11 @@
             <TextBox Name="countMoney"  Margin="5"  Grid.Column="1" Text="0"></TextBox>
             <TextBlock  Margin="5" Grid.Column="2" VerticalAlignment="Center">剩余金额:</TextBlock>
             <TextBox Name="incomeMoney"  Margin="5"   Grid.Column="3"></TextBox>
-            <Button Name="calcMoney"  Margin="5"   Grid.Column="4" Click="calcMoney_Click" FontSize="15" FontFamily="KaiTi" FontWeight="Normal">开始计算</Button>
+            <Button Name="calcMoney"  Margin="5"   Grid.Column="4" Click="calcMoney_Click" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" MaxWidth="120" HorizontalAlignment="Left">开始计算</Button>
 
             <Button Name="addUser"  Margin="5"   Grid.Column="5" Click="addUser_Click"  HorizontalAlignment="Right" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" >添加用户</Button>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -56,10 +56,10 @@
             <TextBox  Grid.Row="1" Grid.Column="1" Name="userCount"  Margin="1"/>
             <TextBox Grid.Row="1" Grid.Column="2" Name="userPhone"  Margin="1"/>
             <ComboBox Name="shopName" SelectedIndex="0" Grid.Row="1" Grid.Column="3"  Margin="2" SelectionChanged="shopName_SelectionChanged" IsEditable="True">
-                <ComboBoxItem>涵香</ComboBoxItem>
+                <!--<ComboBoxItem>涵香</ComboBoxItem>
                 <ComboBoxItem>小而美</ComboBoxItem>
                 <ComboBoxItem>万妮达</ComboBoxItem>
-                <ComboBoxItem>蝶衣</ComboBoxItem>
+                <ComboBoxItem>蝶衣</ComboBoxItem>-->
             </ComboBox>
             <TextBox Grid.Row="1" Grid.Column="4" Name="costMoney"   Margin="1"/>
             <TextBox Grid.Row="1" Grid.Column="5" Name="costForUser"   Margin="1"/>
@@ -67,7 +67,7 @@
             <Button Grid.Row="1" Grid.Column="7" Content="查询" Name="searchItem" Click="searchItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="4" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -93,15 +93,15 @@
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=ShopName}">商户</GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=CostMoney}">金额</GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=CostForUser}">佣金</GridViewColumn>
-                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=DateTime}">时间</GridViewColumn>
+                        <GridViewColumn Width="180" DisplayMemberBinding="{Binding Path=DateTime}">时间</GridViewColumn>
                     </GridView>
 
                 </ListView.View>
             </ListView>
-            <Grid Grid.Column="1">
-                <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click">保存历史数据</Button>
-                <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click">清空列表数据</Button>
-            </Grid>
+            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>
+                <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">清空列表数据</Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </controls:MetroWindow>

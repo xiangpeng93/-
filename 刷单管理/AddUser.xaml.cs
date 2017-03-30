@@ -23,7 +23,9 @@ namespace 刷单管理
     public partial class AddUser : MetroWindow
     {
         string cmdInsert = "INSERT INTO USERINFO (USERNAME , USERCOUNT , USERPHONE ) VALUES ";
+        string cmdInsertShop = "INSERT INTO SHOPINFO (USERNAME , USERCOUNT , USERPHONE ) VALUES ";
         string cmdDelete = "delete from USERINFO where ";
+        string cmdDeleteShop = "delete from SHOPINFO where ";
 
 
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
@@ -107,7 +109,16 @@ namespace 刷单管理
             if (o == null)
                 return;
             CInfoList item = o as CInfoList;
-            string sql = cmdDelete;
+            string sql = "";
+			if (chooseUserOrShop.SelectionBoxItem.Equals("用户"))
+			{
+				sql = cmdDelete;
+			}
+			if (chooseUserOrShop.SelectionBoxItem.Equals("商户"))
+			{
+				sql = cmdDeleteShop;
+			}
+
             if (!item.UserName.Equals(""))
             {
                 sql += "USERNAME = '";
@@ -124,7 +135,7 @@ namespace 刷单管理
                         sql += " and ";
                         sql += " USERPHONE = '";
                         sql += item.UserPhone.ToString();
-                        sql += "'";
+                        sql += "' ";
                     }
                 }
                 Delete(sql);
@@ -168,5 +179,88 @@ namespace 刷单管理
             }
             while (Name.Equals("") == false);
         }
+
+		private void AddShop_Click(object sender, RoutedEventArgs e)
+		{
+            if (!userName.Text.Equals("") && !userCount.Text.Equals(""))
+            {
+                string sql = cmdInsertShop;
+                sql += "('";
+                sql += userName.Text;
+                sql += " ','";
+                sql += userCount.Text;
+                sql += " ','";
+                sql += userPhone.Text;
+                sql += " ')";
+                Insert(sql);
+            }
+            m_manger.Update();
+
+            Users.Clear();
+            Select(m_manger.sqlShop);
+            System.Threading.Thread.Sleep(100);
+            string Name = "";
+
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                GetMsg(TuserName, TuserCount, TuserPhone);
+                Name = TuserName.ToString();
+                if (Name.Equals("") == false)
+                {
+                    Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString()));
+                }
+            }
+            while (Name.Equals("") == false);
+		}
+
+		private void AddToDb_Click(object sender, RoutedEventArgs e)
+		{
+			if(chooseUserOrShop.SelectionBoxItem.Equals("用户"))
+			{
+				sqlAdd_Click(sender,e);
+			}
+			if (chooseUserOrShop.SelectionBoxItem.Equals("商户"))
+			{
+				AddShop_Click(sender,e);
+			}
+		}
+
+		private void search_Click(object sender, RoutedEventArgs e)
+		{
+			string selectSql = "";
+			if(chooseUserOrShop.SelectionBoxItem.Equals("用户"))
+			{
+				selectSql = m_manger.sql;
+			}
+			if (chooseUserOrShop.SelectionBoxItem.Equals("商户"))
+			{
+				selectSql = m_manger.sqlShop;
+			}
+
+			m_manger.Update();
+
+            Users.Clear();
+            Select(selectSql);
+            System.Threading.Thread.Sleep(100);
+            string Name = "";
+
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                GetMsg(TuserName, TuserCount, TuserPhone);
+                Name = TuserName.ToString();
+                if (Name.Equals("") == false)
+                {
+                    Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString()));
+                }
+            }
+            while (Name.Equals("") == false);
+
+		}
     }
 }
