@@ -44,12 +44,12 @@
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Margin="2">姓名</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="1" Margin="2">旺旺号</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="2" Margin="2">手机</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="3" Margin="2">商户</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="4" Margin="2">金额</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="5" Margin="2">佣金</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="5">姓名</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="5">旺旺号</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="2" Margin="5">手机</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="3" Margin="5">商户</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="4" Margin="5">金额</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="5" Margin="5">佣金</TextBlock>
 
             <ComboBox Name="userName" Grid.Row="1" Grid.Column="0" Margin="2" SelectionChanged="userName_SelectionChanged" IsEditable="True">
             </ComboBox>
@@ -64,8 +64,8 @@
             </ComboBox>
             <TextBox Grid.Row="1" Grid.Column="4" Name="costMoney"   Margin="1"/>
             <TextBox Grid.Row="1" Grid.Column="5" Name="costForUser"   Margin="1"/>
-            <Button Grid.Row="1" Grid.Column="6" Content="添加" Name="addItem" Click="addItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
-            <Button Grid.Row="1" Grid.Column="7" Content="查询" Name="searchItem" Click="searchItem_Click"  Margin="5"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
+            <Button Grid.Row="1" Grid.Column="6" Content="添加" Name="addItem" Click="addItem_Click"  Margin="1"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
+            <Button Grid.Row="1" Grid.Column="7" Content="查询" Name="searchItem" Click="searchItem_Click"  Margin="1"  FontSize="13" FontFamily="KaiTi" FontWeight="Normal" />
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
         <Grid Grid.Row="4" Margin="5">
@@ -101,8 +101,8 @@
             </ListView>
             <Grid Grid.Column="1" >
                 <StackPanel VerticalAlignment="Top" >
-                    <TextBlock Text="选择查询日期:" Margin="5,10,0,0" ToolTip="使用shift拖动选择自定义查询范围"/>
-                    <Calendar Margin="0,10,0,0" Name="calendarCtlStart" Grid.Column="5" VerticalAlignment="Top"  SelectionMode="MultipleRange"  SelectedDatesChanged="calendarCtlStart_SelectionModeChanged"/>
+                    <TextBlock Text="选择查询日期:" Margin="5,10,0,0" ToolTip="使用shift或鼠标点击拖动选择自定义查询范围"/>
+                    <Calendar ToolTip="使用shift或鼠标点击拖动选择自定义查询范围"  Margin="0,10,0,0" Name="calendarCtlStart" Grid.Column="5" VerticalAlignment="Top"  SelectionMode="MultipleRange"  SelectedDatesChanged="calendarCtlStart_SelectionModeChanged"/>
                     <!--<TextBlock Text="选择查询结束日期:" Margin="5,10,0,0"/>
                     <Calendar Margin="0,10,0,0" Name="calendarCtlOver" Grid.Column="5" VerticalAlignment="Top" />-->
                 </StackPanel>

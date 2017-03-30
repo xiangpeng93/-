@@ -531,7 +531,7 @@ namespace 刷单管理
 				}
 			}
 			Users.Clear();
-			MessageBox.Show("保存成功");
+			
 		}
 
         private void ClearData_Click(object sender, RoutedEventArgs e)
