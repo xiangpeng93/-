@@ -151,11 +151,11 @@ namespace 刷单管理
                 string sql = cmdInsert;
                 sql += "('";
                 sql += userName.Text;
-                sql += " ','";
+                sql += "','";
                 sql += userCount.Text;
-                sql += " ','";
+                sql += "','";
                 sql += userPhone.Text;
-                sql += " ')";
+                sql += "')";
                 Insert(sql);
             }
             m_manger.Update();
@@ -187,11 +187,11 @@ namespace 刷单管理
                 string sql = cmdInsertShop;
                 sql += "('";
                 sql += userName.Text;
-                sql += " ','";
+                sql += "','";
                 sql += userCount.Text;
-                sql += " ','";
+                sql += "','";
                 sql += userPhone.Text;
-                sql += " ')";
+                sql += "')";
                 Insert(sql);
             }
             m_manger.Update();

@@ -26,10 +26,14 @@ namespace 刷单管理
         public string sqlShop = "select * from SHOPINFO ";
 
         public string searchHistoryData = "select * from HISTORYDATA ";
+        public string searchHistoryDataUser = "select * from USERDATAHISTORY ";
 
         public string InsertHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+        public string InsertHistoryDataUser = "INSERT INTO USERDATAHISTORY (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+        public string updateHistoryDataUser = "UPDATE USERDATAHISTORY ";
 
         string cmdDeleteHistoryData = "delete from HISTORYDATA where ";
+        string cmdDeleteHistoryDataUser = "delete from USERDATAHISTORY where ";
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void Insert(string sql);
 
@@ -272,6 +276,44 @@ namespace 刷单管理
 
                 Delete(sql);
             }
+
+            string sqlDeleteUser = cmdDeleteHistoryDataUser;
+            if (!item.UserName.Equals(""))
+            {
+                sqlDeleteUser += "USERNAME = '";
+                sqlDeleteUser += item.UserName.ToString();
+                sqlDeleteUser += "'";
+                if (!item.UserCount.Equals(""))
+                {
+                    sqlDeleteUser += " and ";
+                    sqlDeleteUser += "USERCOUNT='";
+                    sqlDeleteUser += item.UserCount.ToString();
+                    sqlDeleteUser += "'";
+                }
+                if (!item.UserPhone.Equals(""))
+                {
+                    sqlDeleteUser += " and ";
+                    sqlDeleteUser += " USERPHONE = '";
+                    sqlDeleteUser += item.UserPhone.ToString();
+                    sqlDeleteUser += "'";
+                }
+                if (!item.ShopName.Equals(""))
+                {
+                    sqlDeleteUser += " and ";
+                    sqlDeleteUser += " SHOPNAME = '";
+                    sqlDeleteUser += item.ShopName.ToString();
+                    sqlDeleteUser += "'";
+                }
+                if (!item.DateTime.Equals(""))
+                {
+                    sqlDeleteUser += " and ";
+                    sqlDeleteUser += " DATETIME = '";
+                    sqlDeleteUser += item.DateTime.ToString();
+                    sqlDeleteUser += "'";
+                }
+
+                Delete(sqlDeleteUser);
+            }
             Users.Remove(item);
         }
         private void calcMoney_Click(object sender, RoutedEventArgs e)
@@ -393,7 +435,7 @@ namespace 刷单管理
                 search += "SHOPNAME='";
                 search += sShopName;
                 search += "' ";
-				if (!beginDataTime.ToString().Equals("0001/1/1 0:00:00") && !lastDataTime.ToString().Equals("0001/1/1 0:00:00"))
+                if (!beginDataTime.ToString("u").Equals("0001-01-01 00:00:00Z") && !lastDataTime.ToString("u").Equals("0001-01-01 00:00:00Z"))
 				{
 					search += " and datetime > '";
 					search += beginDataTime.ToString("u");
@@ -412,7 +454,7 @@ namespace 刷单管理
             if (isSelectName)
             {
                 isSelectSuccess = true;
-				if (!beginDataTime.ToString().Equals("0001/1/1 0:00:00") && !lastDataTime.ToString().Equals("0001/1/1 0:00:00"))
+                if (!beginDataTime.ToString("u").Equals("0001-01-01 00:00:00Z") && !lastDataTime.ToString("u").Equals("0001-01-01 00:00:00Z"))
 				{
 					search += " and datetime > '";
 					search += beginDataTime.ToString("u");
@@ -460,6 +502,8 @@ namespace 刷单管理
             foreach (var item in Users)
             {
 				string search = searchHistoryData;
+				string searchForUser = searchHistoryDataUser;
+
 				string sUserName = item.UserName;
 				string sUserCount = item.UserCount;
 				string sUserPhone = item.UserPhone;
@@ -529,6 +573,95 @@ namespace 刷单管理
 						sql = temp;
 						Insert(sql);
 				}
+                //end
+
+                //start
+                if (!sUserName.Equals(""))
+                {
+                    searchForUser += "where USERNAME='";
+                    searchForUser += sUserName;
+                    searchForUser += "' ";
+                }
+                if (!sShopName.Equals(""))
+                {
+                    searchForUser += "and ";
+                    searchForUser += "SHOPNAME='";
+                    searchForUser += sShopName;
+                    searchForUser += "' ";
+                }
+                if (!sUserCount.Equals(""))
+                {
+                    searchForUser += "and ";
+                    searchForUser += "USERCOUNT='";
+                    searchForUser += sUserCount;
+                    searchForUser += "' ";
+                }
+
+                Select2(searchForUser);
+
+                GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, DateTime);
+                TempUserName = TuserName.ToString();
+                TempShopName = ShopName.ToString();
+                TempDateTime = DateTime.ToString();
+                if (TempUserName.Equals("") && TempShopName.Equals("") && TempDateTime.Equals("") &&
+                    !sUserName.Equals("") && !sShopName.Equals(""))
+                {
+                    string temp = InsertHistoryDataUser;
+                    temp += "('";
+                    temp += sUserName;
+                    temp += "','";
+                    temp += sUserCount;
+                    temp += "','";
+                    temp += sUserPhone;
+                    temp += "','";
+                    temp += sShopName;
+                    temp += "','";
+                    temp += sCostMoney;
+                    temp += "','";
+                    temp += sCostForUser;
+                    temp += "','";
+                    temp += sDateTime;            // 2008-9-4 20:02:10;
+                    temp += "')";
+
+                    sql = temp;
+                    Insert(sql);
+                }
+                else 
+                {
+                    string temp = updateHistoryDataUser;
+                    temp += "SET ";
+
+                    temp += "COSTMONEY = '";
+                    temp += sCostMoney;
+                    temp += "', ";
+
+                    temp += "COSTMONEYFORUSER = '";
+                    temp += sCostForUser;
+                    temp += "', ";
+
+                    temp += "DATETIME = '";
+                    temp += sDateTime;
+                    temp += "' WHERE ";
+
+                    temp += "USERNAME = '";
+                    temp += sUserName;
+                    temp += "' and ";
+
+                    temp += "USERCOUNT = '";
+                    temp += sUserCount;
+                    temp += "' and ";
+
+                    temp += "USERPHONE = '";
+                    temp += sUserPhone;
+                    temp += "' and ";
+
+                    temp += "SHOPNAME = '";
+                    temp += sShopName;
+                    temp += "' ";
+                    Delete(temp);
+                    //"SET USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+                }
+
 			}
 			Users.Clear();
 			
@@ -551,6 +684,37 @@ namespace 刷单管理
 			Console.Write(lastDataTime);
 			Console.Write("\r\n");
 		}
+
+        private void serachHistoryUserData_Click(object sender, RoutedEventArgs e)
+        {
+            string search = searchHistoryDataUser;
+            search += " order by datetime";
+            Select2(search);
+            string TempUserName;
+            string TempShopName;
+            string TempDataTime;
+            
+            Users.Clear();
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                StringBuilder ShopName = new StringBuilder(2048);
+                StringBuilder COSTMONEY = new StringBuilder(2048);
+                StringBuilder COSTMONEYForUser = new StringBuilder(2048);
+                StringBuilder sDateTime = new StringBuilder(2048);
+                GetMsg2(TuserName, TuserCount, TuserPhone, ShopName, COSTMONEY, COSTMONEYForUser, sDateTime);
+                TempUserName = TuserName.ToString();
+                TempShopName = ShopName.ToString();
+                TempDataTime = sDateTime.ToString();
+                if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false)
+                {
+                    Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
+                }
+            }
+            while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
+        }
 
     }
 }

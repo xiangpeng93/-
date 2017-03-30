@@ -108,6 +108,7 @@
                 </StackPanel>
 
                 <StackPanel  VerticalAlignment="Bottom" >
+                    <Button Name="serachHistoryUserData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="serachHistoryUserData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >查询用户刷单记录</Button>
                     <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>
                     <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">清空列表数据</Button>
                 </StackPanel>
