@@ -171,10 +171,10 @@ namespace 刷单管理
                 StringBuilder TuserPhone = new StringBuilder(2048);
                 GetMsg(TuserName, TuserCount, TuserPhone);
                 NameShop = TuserName.ToString();
-                if (Name.Equals("") == false)
+                if (NameShop.Equals("") == false)
                 {
                     ComboBoxItem comboxIten = new ComboBoxItem();
-                    comboxIten.Content = Name;
+                    comboxIten.Content = NameShop;
                     shopName.Items.Add(comboxIten);
                 }
             }
