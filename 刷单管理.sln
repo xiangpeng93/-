@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1EA589C1-920A-4448-AC82-D96414DD675D}"
 	ProjectSection(SolutionItems) = preProject
 		excelDemoPython.zip = excelDemoPython.zip
+		packRelease\setup.exe = packRelease\setup.exe
 	EndProjectSection
 EndProject
 Global
