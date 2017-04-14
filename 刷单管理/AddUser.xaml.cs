@@ -224,21 +224,40 @@ namespace 刷单管理
                 }
             }
             while (Name.Equals("") == false);
-			
 		}
 
 		private void AddToDb_Click(object sender, RoutedEventArgs e)
 		{
-
-			if(chooseUserOrShop.SelectionBoxItem.Equals("用户"))
+			string cmdSql = "";
+			if (chooseUserOrShop.SelectionBoxItem.Equals("用户"))
 			{
-				sqlAdd_Click(sender,e);
+				sqlAdd_Click(sender, e);
+				cmdSql = m_manger.sqlUserInfo;
 			}
 			if (chooseUserOrShop.SelectionBoxItem.Equals("商户"))
 			{
-				AddShop_Click(sender,e);
+				AddShop_Click(sender, e);
+				cmdSql = m_manger.sqlShop;
 			}
-updateAllInfo();
+			updateAllInfo();
+
+			Select(cmdSql);
+			System.Threading.Thread.Sleep(100);
+			string Name = "";
+
+            do
+            {
+                StringBuilder TuserName = new StringBuilder(2048);
+                StringBuilder TuserCount = new StringBuilder(2048);
+                StringBuilder TuserPhone = new StringBuilder(2048);
+                GetMsg(TuserName, TuserCount, TuserPhone);
+                Name = TuserName.ToString();
+                if (Name.Equals("") == false)
+                {
+                    Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString()));
+                }
+            }
+            while (Name.Equals("") == false);
 		}
 
 		private void search_Click(object sender, RoutedEventArgs e)
