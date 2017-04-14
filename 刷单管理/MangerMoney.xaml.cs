@@ -528,10 +528,11 @@ namespace 刷单管理
                     TempUserName = TuserName.ToString();
                     TempShopName = ShopName.ToString();
                     TempDataTime = sDateTime.ToString();
-                    if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false)
+                    if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false )
                     {
-                        Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
-                    }
+						if (TempDataTime.Equals("0001-01-01 00:00:00Z") == false)
+							Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
+					}
                 }
                 while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
             }
@@ -539,7 +540,11 @@ namespace 刷单管理
         private void searchItem_Click(object sender, RoutedEventArgs e)
         {
             g_tableType = 0;
-            searchItemData();       
+            searchItemData(); 
+			if(g_tableType == 0)
+			{
+				infoList.ContextMenu.Visibility = Visibility.Visible;
+			}
         }
         public void saveItemDyInput(string sUserName,string sUserCount, string sUserPhone,string sShopName,string sCostMoney,string sCostForUser,string sDateTime)
         {
@@ -715,8 +720,6 @@ namespace 刷单管理
             int dataCount = Users.Count();
             foreach (var item in Users)
             {
-                
-
                 string sUserName = item.UserName;
                 string sUserCount = item.UserCount;
                 string sUserPhone = item.UserPhone;
@@ -724,9 +727,7 @@ namespace 刷单管理
                 string sCostMoney = item.CostMoney;
                 string sCostForUser = item.CostForUser;
                 string sDateTime = item.DateTime;
-
                 saveItemDyInput(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDateTime);
-
             }
             Users.Clear();
         }
@@ -757,16 +758,28 @@ namespace 刷单管理
         private void serachHistoryUserData_Click(object sender, RoutedEventArgs e)
         {
             g_tableType = 1;
+			if(g_tableType == 1)
+			{
+				infoList.ContextMenu.Visibility = Visibility.Hidden;
+			}
             Users.Clear();
 
-            string search = searchHistoryDataUser;
+            string search = "select * from (";
+			search += searchHistoryData;
 			if (!shopName.Text.Equals(""))
 			{
 				search += " where SHOPNAME='";
 				search += shopName.Text.ToString();
 				search += "'";
 			}
-            search += " order by datetime";
+			else
+			{
+				MessageBox.Show("请输入商户!");
+				return ;
+			}
+            search += " order by datetime) ";
+			search += "group by USERNAME";
+ 
             Select2(search);
             string TempUserName;
             string TempShopName;

@@ -50,6 +50,7 @@
                 <ComboBoxItem Name="shopItem">商户</ComboBoxItem>
             </ComboBox>
             <Button Grid.Row="0" Grid.Column="4" Name="backMainWindow" Click="backMainWindows_Click"  Margin="5" Content="返回" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" HorizontalAlignment="Right"/>
+            <Button Grid.Row="0" Grid.Column="4" Name="SaveAllData" Click="SaveAllData_Click"  Margin="5" Content="更新信息" FontSize="15" FontFamily="KaiTi" FontWeight="Normal" HorizontalAlignment="Left"/>
         </Grid>
         <TextBlock Grid.Row="2"></TextBlock>
         <Grid Grid.Row="3" Margin="5">

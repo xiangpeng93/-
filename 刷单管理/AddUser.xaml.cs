@@ -46,6 +46,16 @@ namespace 刷单管理
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void GetMsg(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone);
 
+		struct userInfo
+		{
+			public string userName;
+			public string userCount;
+			public string userPhone;
+	
+		}
+		List<string> m_shopList = new List<string>();
+		List<userInfo> m_userList = new List<userInfo>();
+
         class CInfoList
         {
             public CInfoList(string sUserName,
@@ -214,10 +224,12 @@ namespace 刷单管理
                 }
             }
             while (Name.Equals("") == false);
+			
 		}
 
 		private void AddToDb_Click(object sender, RoutedEventArgs e)
 		{
+
 			if(chooseUserOrShop.SelectionBoxItem.Equals("用户"))
 			{
 				sqlAdd_Click(sender,e);
@@ -226,6 +238,7 @@ namespace 刷单管理
 			{
 				AddShop_Click(sender,e);
 			}
+updateAllInfo();
 		}
 
 		private void search_Click(object sender, RoutedEventArgs e)
@@ -260,7 +273,120 @@ namespace 刷单管理
                 }
             }
             while (Name.Equals("") == false);
+		}
+		private void InsertIfNotExit(string name,string count,string phone,string shop)
+		{
+			string selectSql = "select * from HISTORYDATA where USERNAME='";
+			selectSql+= name;
+			selectSql+= "' and ";
+			selectSql+= "SHOPNAME='";
+			selectSql+= shop;
+			selectSql+= "'";
+			selectSql+= " and ";
+			selectSql+= "DATETIME='";
+			selectSql += "0001-01-01 00:00:00Z";
+			selectSql+= "'";
 
+			Select(selectSql);
+			string Name = "";
+			do
+			{
+				StringBuilder TuserName = new StringBuilder(2048);
+				StringBuilder TuserCount = new StringBuilder(2048);
+				StringBuilder TuserPhone = new StringBuilder(2048);
+				GetMsg(TuserName, TuserCount, TuserPhone);
+				Name = TuserName.ToString();
+				if (Name.Equals("") == true)
+				{
+					string insertToHistoryData =  "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+					insertToHistoryData += "('";
+					insertToHistoryData += name;
+					insertToHistoryData += "','";
+					insertToHistoryData += count;
+					insertToHistoryData += "','";
+					insertToHistoryData += phone;
+					insertToHistoryData += "','";
+
+					insertToHistoryData += shop;
+					insertToHistoryData += "','";
+					insertToHistoryData += "";
+					insertToHistoryData += "','";
+					insertToHistoryData += "";
+					insertToHistoryData += "','";
+					insertToHistoryData += "0001-01-01 00:00:00Z";            
+					insertToHistoryData += "')";
+					Insert(insertToHistoryData);
+				}
+			}
+			while (Name.Equals("") == false);
+
+		}		
+
+		private void updateAllInfo()
+		{
+			string selectSql = "";
+			selectSql = m_manger.sqlShop;	
+			m_manger.Update();
+			Users.Clear();
+			Select(selectSql);
+			System.Threading.Thread.Sleep(100);
+			string Name = "";
+			do
+			{
+				StringBuilder TuserName = new StringBuilder(2048);
+				StringBuilder TuserCount = new StringBuilder(2048);
+				StringBuilder TuserPhone = new StringBuilder(2048);
+				GetMsg(TuserName, TuserCount, TuserPhone);
+				Name = TuserName.ToString();
+				if (Name.Equals("") == false)
+				{
+					m_shopList.Add(Name);
+					Console.Write(Name);
+					Console.Write("\r\n");
+				}
+			}
+			while (Name.Equals("") == false);
+
+
+			selectSql = m_manger.sqlUserInfo;	
+			m_manger.Update();
+			Users.Clear();
+			Select(selectSql);
+			System.Threading.Thread.Sleep(100);
+			do
+			{
+				StringBuilder TuserName = new StringBuilder(2048);
+				StringBuilder TuserCount = new StringBuilder(2048);
+				StringBuilder TuserPhone = new StringBuilder(2048);
+				GetMsg(TuserName, TuserCount, TuserPhone);
+				Name = TuserName.ToString();
+				if (Name.Equals("") == false)
+				{
+					userInfo UserInfoTemp = new userInfo();
+					UserInfoTemp.userName = TuserName.ToString();
+					UserInfoTemp.userCount = TuserCount.ToString();
+					UserInfoTemp.userPhone = TuserPhone.ToString();
+					m_userList.Add(UserInfoTemp);
+					Console.Write(Name);
+					Console.Write("\r\n");
+					
+					
+				}
+			}
+			while (Name.Equals("") == false);
+
+			foreach (var useritem in m_userList)
+			{
+				foreach (var shopitem in m_shopList)
+				{
+					InsertIfNotExit(useritem.userName, useritem.userCount, useritem.userPhone, shopitem.ToString());
+				}
+			}
+}
+
+		private void SaveAllData_Click(object sender, RoutedEventArgs e)
+		{
+			updateAllInfo();
 		}
     }
 }
