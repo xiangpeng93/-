@@ -36,14 +36,15 @@ namespace 刷单管理
 
             // Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
-            string filename = string.Empty;
-
+            string filename = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            filename = filename.Substring(0, filename.LastIndexOf('\\'));
+            filename += "\\saveData.py";
             // Process save file dialog box results
             if (result == true)
             {
                 var engine = IronPython.Hosting.Python.CreateEngine();
                 var scope = engine.CreateScope();
-                var source = engine.CreateScriptSourceFromFile("saveData.py");
+                var source = engine.CreateScriptSourceFromFile(filename);
                 source.Execute(scope);
                 var insertDataByFileName = scope.GetVariable<Func<object, object, object, object, object, object, object, object, object>>("insertInfoByFileName");
 
