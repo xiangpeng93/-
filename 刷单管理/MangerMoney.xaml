@@ -107,6 +107,8 @@
                     <Calendar ToolTip="使用shift或鼠标点击拖动选择自定义查询范围"  Margin="0,10,0,0" Name="calendarCtlStart" Grid.Column="5" VerticalAlignment="Top"  SelectionMode="MultipleRange"  SelectedDatesChanged="calendarCtlStart_SelectionModeChanged"/>
                     <!--<TextBlock Text="选择查询结束日期:" Margin="5,10,0,0"/>
                     <Calendar Margin="0,10,0,0" Name="calendarCtlOver" Grid.Column="5" VerticalAlignment="Top" />-->
+                    <Button Name="SaveToXls" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="SaveToXls_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">导出列表数据</Button>
+
                 </StackPanel>
 
                 <StackPanel  VerticalAlignment="Bottom" >

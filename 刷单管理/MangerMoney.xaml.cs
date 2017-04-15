@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace 刷单管理
 {
@@ -57,7 +58,7 @@ namespace 刷单管理
 
         [DllImport("DBLayer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern void GetMsg2(StringBuilder userName, StringBuilder userCount, StringBuilder userPhone, StringBuilder shopName, StringBuilder costMoney, StringBuilder costMoneyForUser, StringBuilder dateTime);
-        private ObservableCollection<CInfoList> Users = new ObservableCollection<CInfoList>();
+        public ObservableCollection<CInfoList> Users = new ObservableCollection<CInfoList>();
 
 		DateTime beginDataTime;
 		DateTime lastDataTime;
@@ -67,7 +68,7 @@ namespace 刷单管理
         // 0 history Table
         // 1 historyUser Table
         int g_tableType = 0;
-        class CInfoList
+        public class CInfoList
         {
             public CInfoList(string sUserName,
             string sUserCount,
@@ -540,11 +541,11 @@ namespace 刷单管理
         private void searchItem_Click(object sender, RoutedEventArgs e)
         {
             g_tableType = 0;
-            searchItemData(); 
-			if(g_tableType == 0)
-			{
-				infoList.ContextMenu.Visibility = Visibility.Visible;
-			}
+            searchItemData();
+            if (g_tableType == 0)
+            {
+                infoList.ContextMenu.Visibility = Visibility.Visible;
+            }
         }
         public void saveItemDyInput(string sUserName,string sUserCount, string sUserPhone,string sShopName,string sCostMoney,string sCostForUser,string sDateTime)
         {
@@ -804,6 +805,13 @@ namespace 刷单管理
                 }
             }
             while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
+        }
+
+        private void SaveToXls_Click(object sender, RoutedEventArgs e)
+        {
+            SaveToXls updateHistory = new SaveToXls(this);
+           
+            updateHistory.Show();
         }
 
 		

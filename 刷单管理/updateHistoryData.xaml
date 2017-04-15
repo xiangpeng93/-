@@ -28,7 +28,7 @@
 
             <TextBlock Text="时间：" Margin="5" VerticalAlignment="Center"></TextBlock>
             <TextBox Name="usertime" Width="160" VerticalAlignment="Center"></TextBox>
-            <Button Name="updateHistoryDataClick" Margin="5" Width="120" VerticalAlignment="Bottom" Click="updateHistoryData_Click">确认修改</Button>
+            <Button Name="updateHistoryDataClick" Margin="5" Width="120" VerticalAlignment="Bottom" Click="updateHistoryData_Click"  FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">确认修改</Button>
         </DockPanel>
     </Grid>
 </controls:MetroWindow>
