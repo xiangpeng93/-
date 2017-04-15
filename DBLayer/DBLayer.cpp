@@ -165,7 +165,7 @@ void  __stdcall Select(char *sql)
 	g_returnMsg.clear();
 	g_mutex.unlock();
 	char *flag = "Select";
-	sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
+	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
 }
 
 void  __stdcall Select2(char *sql)

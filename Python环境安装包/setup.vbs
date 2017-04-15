@@ -5,6 +5,14 @@ Set fso = CreateObject("Scripting.FileSystemObject")
 
 set shell = wscript.createobject("wscript.shell")
 
+source = "setup.bat"
+shell.run source
+REM 删除安装包
+fso.DeleteFolder(source)
+
+source = "python-2.7.10.msi"
+fso.DeleteFolder(source)
+
 
 source = localPath + "\xlrd"
 REM 拷贝至指定目录
@@ -27,13 +35,6 @@ fso.CopyFolder source, dstPath
 REM 删除安装包
 fso.DeleteFolder(source)
 
-source = "setup.bat"
-shell.run source
-REM 删除安装包
-fso.DeleteFolder(source)
-
-source = "python-2.7.10.msi"
-fso.DeleteFolder(source)
 
 REM 删除自身
 fso.DeleteFile(WScript.ScriptFullName)
