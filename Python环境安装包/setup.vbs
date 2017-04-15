@@ -13,6 +13,7 @@ fso.DeleteFolder(source)
 source = "python-2.7.10.msi"
 fso.DeleteFolder(source)
 
+if fso.folderexists("C:\python27\") = false then fso.createfolder "C:\python27\"       '如果路径不存在则创建文件夹
 
 source = localPath + "\xlrd"
 REM 拷贝至指定目录
