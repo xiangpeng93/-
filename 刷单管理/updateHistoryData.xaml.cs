@@ -199,5 +199,10 @@ namespace 刷单管理
 			usercostMoney.Text = costmoney;
 			usertime.Text = time;
 		}
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            g_mangerMoney.IsEnabled = true;
+        }
 	}
 }

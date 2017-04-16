@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       
-        Title="修改窗口" Height="144" Width="1128" ResizeMode="CanMinimize">
+        Title="修改窗口" Height="144" Width="1128" ResizeMode="CanMinimize" Closed="MetroWindow_Closed">
     <Grid>
         <DockPanel Margin="2" HorizontalAlignment="Left">
             <TextBlock Text="名称：" Margin="5" VerticalAlignment="Center"></TextBlock>
