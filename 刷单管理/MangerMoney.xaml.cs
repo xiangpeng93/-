@@ -765,7 +765,8 @@ namespace 刷单管理
 			}
             Users.Clear();
 
-            string search = "select * from (";
+            string search = "select * from (select * from (";
+
 			search += searchHistoryData;
 			if (!shopName.Text.Equals(""))
 			{
@@ -778,8 +779,9 @@ namespace 刷单管理
 				MessageBox.Show("请输入商户!");
 				return ;
 			}
-            search += " order by datetime) ";
-			search += "group by USERNAME";
+            search += " order by DATETIME)";
+			search += " group by USERNAME)";
+            search += " order by DATETIME ";
  
             Select2(search);
             string TempUserName;
@@ -803,8 +805,10 @@ namespace 刷单管理
                 {
                     Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
                 }
+
             }
             while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
+            Users.OrderBy(p => p.DateTime);
         }
 
         private void SaveToXls_Click(object sender, RoutedEventArgs e)
