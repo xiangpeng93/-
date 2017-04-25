@@ -51,7 +51,7 @@
             <TextBlock Grid.Row="0" Grid.Column="4" Margin="5">金额</TextBlock>
             <TextBlock Grid.Row="0" Grid.Column="5" Margin="5">佣金</TextBlock>
 
-            <ComboBox Name="userName" Grid.Row="1" Grid.Column="0" Margin="2" SelectionChanged="userName_SelectionChanged" IsEditable="True">
+            <ComboBox Name="userName" Grid.Row="1" Grid.Column="0" Margin="-1,4,5,0" SelectionChanged="userName_SelectionChanged" IsEditable="True">
             </ComboBox>
 
             <TextBox  Grid.Row="1" Grid.Column="1" Name="userCount"  Margin="1"/>
@@ -77,7 +77,7 @@
                 
                 <ListView.ContextMenu>
                     <ContextMenu Name="menu" >
-                        <MenuItem Header="删除列表数据" Click="MenuItem_Click"></MenuItem>
+                        <!--<MenuItem Header="删除列表数据" Click="MenuItem_Click"></MenuItem>-->
                         <MenuItem Header="删除历史数据" Name="DeleteDbData" Click="DeleteDbData_Click"></MenuItem>
                         <MenuItem Header="编辑历史数据" Name="EditHistoryData" Click="EditHistoryData_Click"></MenuItem>
                     </ContextMenu>
@@ -88,9 +88,9 @@
                 <ListView.View >
 
                     <GridView >
-                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserName}" Header="名称" >
+                        <GridViewColumn Width="50" DisplayMemberBinding="{Binding Path=IDNumber}" Header="序号" />
+                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserName}" Header="名称" />
 
-                        </GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserCount}" >旺旺号</GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=UserPhone}">手机</GridViewColumn>
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding Path=ShopName}">商户</GridViewColumn>
@@ -113,7 +113,7 @@
 
                 <StackPanel  VerticalAlignment="Bottom" >
                     <Button Name="serachHistoryUserData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="serachHistoryUserData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >查询用户刷单记录</Button>
-                    <Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>
+                    <!--<Button Name="SaveHistoryData" Margin="5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="SaveHistoryData_Click" FontFamily="KaiTi" FontWeight="Normal" FontSize="15" >保存历史数据</Button>-->
                     <Button Name="ClearData" Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Click="ClearData_Click" FontFamily="KaiTi"  FontWeight="Normal" FontSize="15">清空列表数据</Button>
                 </StackPanel>
             </Grid>

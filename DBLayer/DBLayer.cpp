@@ -50,6 +50,8 @@ private:
 	mutex *m_mutex;
 };
 
+bool g_callback1 = false;
+bool g_callback2 = false;
 int callback(void*para, int nCount, char** pValue, char** pName) {
 	char *flag = (char *)para;
 	string s;
@@ -78,7 +80,7 @@ int callback(void*para, int nCount, char** pValue, char** pName) {
 		}
 	}
 
-	cout << s.c_str() << endl;
+	//cout << s.c_str() << endl;
 	g_mutex.lock();
 	g_returnMsg.push_back(std::pair<string, msgInfo>(id, tempInfo));
 	g_mutex.unlock();
@@ -129,8 +131,9 @@ int callback2(void*para, int nCount, char** pValue, char** pName) {
 		}
 	}
 
-	cout << s.c_str() << endl;
+	//cout << s.c_str() << endl;
 	g_mutex.lock();
+
 	g_returnHistoryMsg.push_back(std::pair<string, HISTORYINFO>(id, tempInfo));
 	g_mutex.unlock();
 	return 0;
@@ -157,6 +160,7 @@ void __stdcall Insert(char *sql)
 {
 	char *flag = "Insert";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
+
 }
 
 void  __stdcall Select(char *sql)
@@ -166,6 +170,8 @@ void  __stdcall Select(char *sql)
 	g_mutex.unlock();
 	char *flag = "Select";
 	sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
+	Sleep(100);
+
 }
 
 void  __stdcall Select2(char *sql)
@@ -176,6 +182,7 @@ void  __stdcall Select2(char *sql)
 	char *flag = "Select";
 	cout << sql << endl;
 	sqlite3_exec(db, sql, callback2, (void *)flag, &sErrMsg);
+	Sleep(100);
 }
 
 void __stdcall Delete(char *sql)
@@ -183,16 +190,21 @@ void __stdcall Delete(char *sql)
 	cout << sql << endl;
 	char *flag = "Delete";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
+
 }
 
 void __stdcall Delete2(char *sql)
 {
 	char *flag = "Delete";
 	sqlite3_exec(db, sql, NULL, (void *)flag, &sErrMsg);
+
 }
 
 void __stdcall GetMsg(char *userName, char *userCount, char *userPhone)
 {
+	int i = 0;
+	
+
 	g_mutex.lock();
 
 	if (g_returnMsg.size() > 0)
@@ -212,6 +224,8 @@ void __stdcall GetMsg(char *userName, char *userCount, char *userPhone)
 
 void __stdcall GetMsg2(char *userName, char *userCount, char *userPhone, char *shopName, char *costMoney, char *costMoneyForUser,char * dataTime)
 {
+	int i = 0;
+	
 	g_mutex.lock();
 	if (g_returnHistoryMsg.size() > 0)
 	{
@@ -233,6 +247,7 @@ void __stdcall GetMsg2(char *userName, char *userCount, char *userPhone, char *s
 
 		g_returnHistoryMsg.erase(iter);
 	}
+
 	g_mutex.unlock();
 
 }

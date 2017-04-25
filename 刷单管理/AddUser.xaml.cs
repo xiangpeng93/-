@@ -83,7 +83,6 @@ namespace 刷单管理
 
             Users.Clear();
             Select(m_manger.sqlUserInfo);
-            System.Threading.Thread.Sleep(100);
             string Name = "";
 
             do
@@ -172,7 +171,6 @@ namespace 刷单管理
 
             Users.Clear();
             Select(m_manger.sqlUserInfo);
-            System.Threading.Thread.Sleep(100);
             string Name = "";
 
             do
@@ -208,7 +206,6 @@ namespace 刷单管理
 
             Users.Clear();
             Select(m_manger.sqlShop);
-            System.Threading.Thread.Sleep(100);
             string Name = "";
 
             do
@@ -239,10 +236,14 @@ namespace 刷单管理
 				AddShop_Click(sender, e);
 				cmdSql = m_manger.sqlShop;
 			}
-			updateAllInfo();
+            userName.Clear();
+            userCount.Clear();
+            userPhone.Clear();
+            Users.Clear();
+            
+			//updateAllInfo();
 
 			Select(cmdSql);
-			System.Threading.Thread.Sleep(100);
 			string Name = "";
 
             do
@@ -276,7 +277,6 @@ namespace 刷单管理
 
             Users.Clear();
             Select(selectSql);
-            System.Threading.Thread.Sleep(100);
             string Name = "";
 
             do
@@ -295,6 +295,27 @@ namespace 刷单管理
 		}
 		private void InsertIfNotExit(string name,string count,string phone,string shop)
 		{
+            string insertToHistoryData = "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
+            insertToHistoryData += "('";
+            insertToHistoryData += name;
+            insertToHistoryData += "','";
+            insertToHistoryData += count;
+            insertToHistoryData += "','";
+            insertToHistoryData += phone;
+            insertToHistoryData += "','";
+
+            insertToHistoryData += shop;
+            insertToHistoryData += "','";
+            insertToHistoryData += "";
+            insertToHistoryData += "','";
+            insertToHistoryData += "";
+            insertToHistoryData += "','";
+            insertToHistoryData += "0001-01-01 00:00:00Z";
+            insertToHistoryData += "')";
+            Insert(insertToHistoryData);
+
+            return;
+
 			string selectSql = "select * from HISTORYDATA where USERNAME='";
 			selectSql+= name;
 			selectSql+= "' and ";
@@ -317,28 +338,10 @@ namespace 刷单管理
 				Name = TuserName.ToString();
 				if (Name.Equals("") == true)
 				{
-					string insertToHistoryData =  "INSERT INTO HISTORYDATA (USERNAME , USERCOUNT , USERPHONE ,SHOPNAME, COSTMONEY ,COSTMONEYFORUSER ,DATETIME) VALUES";
-					insertToHistoryData += "('";
-					insertToHistoryData += name;
-					insertToHistoryData += "','";
-					insertToHistoryData += count;
-					insertToHistoryData += "','";
-					insertToHistoryData += phone;
-					insertToHistoryData += "','";
-
-					insertToHistoryData += shop;
-					insertToHistoryData += "','";
-					insertToHistoryData += "";
-					insertToHistoryData += "','";
-					insertToHistoryData += "";
-					insertToHistoryData += "','";
-					insertToHistoryData += "0001-01-01 00:00:00Z";            
-					insertToHistoryData += "')";
-					Insert(insertToHistoryData);
+					
 				}
 			}
 			while (Name.Equals("") == false);
-
 		}		
 
 		private void updateAllInfo()
@@ -348,7 +351,6 @@ namespace 刷单管理
 			m_manger.Update();
 			Users.Clear();
 			Select(selectSql);
-			System.Threading.Thread.Sleep(100);
 			string Name = "";
 			do
 			{
@@ -371,7 +373,6 @@ namespace 刷单管理
 			m_manger.Update();
 			Users.Clear();
 			Select(selectSql);
-			System.Threading.Thread.Sleep(100);
 			do
 			{
 				StringBuilder TuserName = new StringBuilder(2048);
@@ -388,11 +389,11 @@ namespace 刷单管理
 					m_userList.Add(UserInfoTemp);
 					Console.Write(Name);
 					Console.Write("\r\n");
-					
-					
 				}
 			}
 			while (Name.Equals("") == false);
+
+            Delete("DELETE from HISTORYDATA where DATETIME='0001-01-01 00:00:00Z'");
 
 			foreach (var useritem in m_userList)
 			{

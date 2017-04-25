@@ -23,8 +23,9 @@ namespace 刷单管理
     /// </summary>
     public partial class MangerMoney : MetroWindow
     {
+        public string sqlUserInfoOrderByName = "select * from USERINFO order by USERNAME";
         public string sqlUserInfo = "select * from USERINFO ";
-        public string sqlShop = "select * from SHOPINFO ";
+        public string sqlShop = "select * from SHOPINFO order by USERNAME";
 
         public string searchHistoryData = "select * from HISTORYDATA ";
         public string searchHistoryDataUser = "select * from USERDATAHISTORY ";
@@ -68,9 +69,12 @@ namespace 刷单管理
         // 0 history Table
         // 1 historyUser Table
         int g_tableType = 0;
+        static int g_number = 0;
         public class CInfoList
         {
-            public CInfoList(string sUserName,
+            public CInfoList(
+                string sIdNumber,
+                string sUserName,
             string sUserCount,
             string sUserPhone ,
             string sShopName ,
@@ -78,6 +82,7 @@ namespace 刷单管理
             string sCostForUser,
             string sDateTime)
             {
+                IDNumber = sIdNumber;
                 UserName = sUserName;
                 UserCount = sUserCount;
                 UserPhone = sUserPhone;
@@ -86,6 +91,7 @@ namespace 刷单管理
                 CostForUser = sCostForUser;
                 DateTime = sDateTime;
             }
+            public string IDNumber { get; set; }
             public string UserName { get; set; }
             public string UserCount { get; set; }
             public string UserPhone { get; set; }
@@ -104,8 +110,7 @@ namespace 刷单管理
             Init();
 
             userName.Items.Clear();
-            Select(sqlUserInfo);
-            System.Threading.Thread.Sleep(100);
+            Select(sqlUserInfoOrderByName);
             string Name = "";
 
             ComboBoxItem comboxIten1 = new ComboBoxItem();
@@ -131,7 +136,6 @@ namespace 刷单管理
 
 			shopName.Items.Clear();
             Select(sqlShop);
-            System.Threading.Thread.Sleep(100);
             string NameShop = "";
             ComboBoxItem comboxIten2 = new ComboBoxItem();
             comboxIten2.Content = NameShop;
@@ -159,8 +163,7 @@ namespace 刷单管理
             userCount.Clear();
             userPhone.Clear();
             userName.Items.Clear();
-            Select(sqlUserInfo);
-            System.Threading.Thread.Sleep(100);
+            Select(sqlUserInfoOrderByName);
             string Name = "";
             ComboBoxItem comboxIten1 = new ComboBoxItem();
             comboxIten1.Content = "";
@@ -184,7 +187,6 @@ namespace 刷单管理
 
             shopName.Items.Clear();
             Select(sqlShop);
-            System.Threading.Thread.Sleep(100);
             string NameShop = "";
             ComboBoxItem comboxIten2 = new ComboBoxItem();
             comboxIten2.Content = NameShop;
@@ -219,7 +221,11 @@ namespace 刷单管理
             {
                 Users.Clear();
                 isFirstClicAddList = false;
+                g_number = 0;
             }
+            g_number++;
+
+
             string sUserName = userName.Text;
             string sUserCount = userCount.Text;
             string sUserPhone = userPhone.Text;
@@ -238,7 +244,11 @@ namespace 刷单管理
 
 			}
             string sDatetime = DateTime.Now.ToLocalTime().ToString("u");
-            Users.Add(new CInfoList(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime));
+
+            Users.Add(new CInfoList(g_number.ToString(),sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime));
+            if (sUserName.Equals("") || sUserCount.Equals("") || sShopName.Equals(""))
+                return;
+            saveItemDyInput(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDatetime);
         }
        
         
@@ -461,7 +471,18 @@ namespace 刷单管理
             }
             else if (sShopName.Equals(""))
             {
+
+                if (!beginDataTime.ToString("u").Equals("0001-01-01 00:00:00Z") && !lastDataTime.ToString("u").Equals("0001-01-01 00:00:00Z"))
+                {
+                    search += " where datetime > '";
+                    search += beginDataTime.ToString("u");
+                    search += "' and datetime < '";
+                    search += lastDataTime.ToString("u");
+                    search += "'";
+
+                }
                 search += " order by DATETIME";
+
                 Select2(search);
                 isSelectSuccess = true;
             }
@@ -513,6 +534,7 @@ namespace 刷单管理
             string TempUserName;
             string TempShopName;
             string TempDataTime;
+            g_number = 0;
             if (isSelectSuccess)
             {
                 Users.Clear();
@@ -532,7 +554,10 @@ namespace 刷单管理
                     if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false )
                     {
 						if (TempDataTime.Equals("0001-01-01 00:00:00Z") == false)
-							Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
+                        {
+                            g_number++;
+                            Users.Add(new CInfoList(g_number.ToString(),TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
+                        }
 					}
                 }
                 while (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false);
@@ -728,6 +753,8 @@ namespace 刷单管理
                 string sCostMoney = item.CostMoney;
                 string sCostForUser = item.CostForUser;
                 string sDateTime = item.DateTime;
+                if (sUserName.Equals("") || sUserCount.Equals("") || sShopName.Equals(""))
+                    return;
                 saveItemDyInput(sUserName, sUserCount, sUserPhone, sShopName, sCostMoney, sCostForUser, sDateTime);
             }
             Users.Clear();
@@ -761,7 +788,7 @@ namespace 刷单管理
             g_tableType = 1;
 			if(g_tableType == 1)
 			{
-				infoList.ContextMenu.Visibility = Visibility.Hidden;
+				//infoList.ContextMenu.Visibility = Visibility.Hidden;
 			}
             Users.Clear();
 
@@ -787,7 +814,7 @@ namespace 刷单管理
             string TempUserName;
             string TempShopName;
             string TempDataTime;
-            
+            g_number = 0;
             do
             {
                 StringBuilder TuserName = new StringBuilder(2048);
@@ -803,7 +830,8 @@ namespace 刷单管理
                 TempDataTime = sDateTime.ToString();
                 if (TempUserName.Equals("") == false || TempShopName.Equals("") == false || TempDataTime.Equals("") == false)
                 {
-                    Users.Add(new CInfoList(TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
+                    g_number++;
+                    Users.Add(new CInfoList(g_number.ToString(),TuserName.ToString(), TuserCount.ToString(), TuserPhone.ToString(), ShopName.ToString(), COSTMONEY.ToString(), COSTMONEYForUser.ToString(), sDateTime.ToString()));
                 }
 
             }
