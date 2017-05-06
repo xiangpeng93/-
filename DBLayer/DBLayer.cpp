@@ -23,6 +23,8 @@ struct msgInfo{
 };
 vector<pair<string, msgInfo>> g_returnMsg;
 
+char* g_errMsg = 0;
+
 struct HISTORYINFO{
 	string userName;
 	string userCount;
@@ -169,7 +171,64 @@ void  __stdcall Select(char *sql)
 	g_returnMsg.clear();
 	g_mutex.unlock();
 	char *flag = "Select";
-	sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
+	//sqlite3_exec(db, sql, callback, (void *)flag, &sErrMsg);
+	char** pResult;
+	int nRow;
+	int nCol;
+	int nResult = sqlite3_get_table(db, sql, &pResult, &nRow, &nCol, &g_errMsg);
+	if (nResult != SQLITE_OK)
+	{
+		cout << g_errMsg << endl;
+		sqlite3_free(g_errMsg);
+		return;
+	}
+
+	int nIndex = nCol;
+	for (int i = 0; i < nRow; i++)
+	{
+		string id;
+		msgInfo tempInfo;
+		for (int j = 0; j < nCol; j++)
+		{
+			string strOut;
+			strOut += pResult[j];
+			strOut += ":";
+			if (pResult[nIndex] != NULL)
+			{
+				strOut += pResult[nIndex];
+
+				if (strcmp(pResult[j], "id") == 0)
+				{
+					id = pResult[nIndex];
+				}
+				if (strcmp(pResult[j], "USERNAME") == 0)
+				{
+					tempInfo.userName = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "USERCOUNT") == 0)
+				{
+					tempInfo.userCount = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "USERPHONE") == 0)
+				{
+					tempInfo.userPhone = pResult[nIndex];
+				}
+			}
+			strOut += " ";
+
+			++nIndex;
+			cout << strOut.c_str();
+		}
+		cout << endl;
+		if (!id.empty())
+		{
+			g_mutex.lock();
+			g_returnMsg.push_back(std::pair<string, msgInfo>(id, tempInfo));
+			g_mutex.unlock();
+		}
+	}
+	sqlite3_free_table(pResult);  //使用完后务必释放为记录分配的内存，否则会内存泄漏
+
 	Sleep(100);
 
 }
@@ -181,7 +240,78 @@ void  __stdcall Select2(char *sql)
 	g_mutex.unlock();
 	char *flag = "Select";
 	cout << sql << endl;
-	sqlite3_exec(db, sql, callback2, (void *)flag, &sErrMsg);
+	//sqlite3_exec(db, sql, callback2, (void *)flag, &sErrMsg);
+	char** pResult;
+	int nRow;
+	int nCol;
+	int nResult = sqlite3_get_table(db, sql, &pResult, &nRow, &nCol, &g_errMsg);
+	if (nResult != SQLITE_OK)
+	{
+		cout << g_errMsg << endl;
+		sqlite3_free(g_errMsg);
+		return;
+	}
+
+	int nIndex = nCol;
+	for (int i = 0; i < nRow; i++)
+	{
+		string id;
+		HISTORYINFO tempInfo;
+		for (int j = 0; j < nCol; j++)
+		{
+			string strOut;
+			strOut += pResult[j];
+			strOut += ":";
+			if (pResult[nIndex] != NULL)
+			{
+				strOut += pResult[nIndex];
+				if (strcmp(pResult[j], "id") == 0)
+				{
+					id = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "USERNAME") == 0)
+				{
+					tempInfo.userName = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "USERCOUNT") == 0)
+				{
+					tempInfo.userCount = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "USERPHONE") == 0)
+				{
+					tempInfo.userPhone = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "SHOPNAME") == 0)
+				{
+					tempInfo.SHOPNAME = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "COSTMONEY") == 0)
+				{
+					tempInfo.COSTMONEY = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "COSTMONEYFORUSER") == 0)
+				{
+					tempInfo.COSTMONEYFORUSER = pResult[nIndex];
+				}
+				else if (strcmp(pResult[j], "DATETIME") == 0)
+				{
+					tempInfo.DATETIME = pResult[nIndex];
+				}
+			}
+			strOut += " ";
+
+			++nIndex;
+			cout << strOut.c_str();
+		}
+		cout << endl;
+		if (!id.empty())
+		{
+			g_mutex.lock();
+			g_returnHistoryMsg.push_back(std::pair<string, HISTORYINFO>(id, tempInfo));
+			g_mutex.unlock();
+		}
+	}
+	sqlite3_free_table(pResult);  //使用完后务必释放为记录分配的内存，否则会内存泄漏
 	Sleep(100);
 }
 
