@@ -29,16 +29,6 @@ REM 删除安装包
 fso.DeleteFolder(source)
 
 
-source = "setup.bat"
-shell.run source
-REM 删除安装包
-fso.DeleteFolder(source)
-
-source = "python-2.7.10.msi"
-fso.DeleteFolder(source)
-
-
-
 
 REM 删除自身
 fso.DeleteFile(WScript.ScriptFullName)

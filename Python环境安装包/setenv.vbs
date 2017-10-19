@@ -6,11 +6,6 @@ shell.Environment.Item( "PATH" ) = pythonEnv
 
 Set fso = CreateObject("Scripting.FileSystemObject")
 
-source = "setenv.bat"
-shell.run source
-REM 删除安装包
-fso.DeleteFolder(source)
-
 
 REM 删除自身
 fso.DeleteFile(WScript.ScriptFullName)
